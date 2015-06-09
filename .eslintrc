@@ -2,8 +2,12 @@
   "extends": "segment/browser",
 
   "rules": {
+    // FIXME: Refactor and remove this rule
+    "consistent-return": 1,
     "global-strict": 0,
     "max-len": 0,
+    // FIXME: Refactor and remove this rule
+    "no-use-before-define": 1,
     "strict": 1
   },
 
