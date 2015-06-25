@@ -2,7 +2,7 @@
   "name": "analytics.js-integration-google-analytics",
   "repo": "segment-integrations/analytics.js-integration-google-analytics",
   "description": "The Google Analytics analytics.js integration.",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "license": "MIT",
   "main": "lib/index.js",
   "dependencies": {
@@ -10,7 +10,7 @@
     "avetisk/defaults": "0.0.1",
     "segmentio/obj-case": "0.2.1",
     "component/each": "0.0.1",
-    "segmentio/analytics.js-integration": "0.3.x",
+    "segmentio/analytics.js-integration": "^1.0.0",
     "ianstormtaylor/is": "0.1.0",
     "component/object": "0.0.3",
     "segmentio/global-queue": "0.0.2",
