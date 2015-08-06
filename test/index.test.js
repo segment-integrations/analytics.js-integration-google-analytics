@@ -735,6 +735,33 @@ describe('Google Analytics', function() {
           analytics.deepEqual(window.ga.args[4], ['send', 'event', 'cat 1', 'added product', { nonInteraction: 1 }]);
         });
 
+        it('should send send label tracking enhanced ecommerce events with Univeral Analytics', function() {
+          analytics.track('added product', {
+            currency: 'CAD',
+            quantity: 1,
+            price: 24.75,
+            name: 'my product',
+            category: 'cat 1',
+            sku: 'p-298',
+            label: 'sample label'
+          });
+
+          analytics.assert(window.ga.args.length === 5);
+          analytics.deepEqual(window.ga.args[1], ['set', '&cu', 'CAD']);
+          analytics.deepEqual(window.ga.args[2], ['ec:addProduct', {
+            id: 'p-298',
+            name: 'my product',
+            category: 'cat 1',
+            quantity: 1,
+            price: 24.75,
+            brand: undefined,
+            variant: undefined,
+            currency: 'CAD'
+          }]);
+          analytics.deepEqual(window.ga.args[3], ['ec:setAction', 'add', {}]);
+          analytics.deepEqual(window.ga.args[4], ['send', 'event', 'cat 1', 'added product', 'sample label', { nonInteraction: 1 }]);
+        });
+
         it('should send removed product data', function() {
           analytics.track('removed product', {
             currency: 'CAD',
