@@ -1,4 +1,10 @@
 
+1.0.5 / 2015-08-06
+==================
+
+  * Merge pull request #9 from segment-integrations/label-fix
+  * add label field to GA enhanced ecommerce calls.
+
 1.0.4 / 2015-06-30
 ==================
 
