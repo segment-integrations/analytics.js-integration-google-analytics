@@ -1119,6 +1119,66 @@ describe('Google Analytics', function() {
           analytics.deepEqual(window.ga.args[5], ['send', 'event', 'EnhancedEcommerce', 'completed order', { nonInteraction: 1 }]);
         });
 
+        it('should add coupon to product level in completed order', function() {
+          analytics.track('completed order', {
+            orderId: '780bc55',
+            total: 99.9,
+            shipping: 13.99,
+            tax: 20.99,
+            currency: 'CAD',
+            coupon: 'coupon',
+            affiliation: 'affiliation',
+            products: [{
+              quantity: 1,
+              price: 24.75,
+              name: 'my product',
+              category: 'cat 1',
+              sku: 'p-298',
+              coupon: 'promo'
+            }, {
+              quantity: 3,
+              price: 24.75,
+              name: 'other product',
+              category: 'cat 2',
+              sku: 'p-299',
+              currency: 'EUR'
+            }]
+          });
+
+          analytics.assert(window.ga.args.length === 6);
+          analytics.deepEqual(window.ga.args[1], ['set', '&cu', 'CAD']);
+          analytics.deepEqual(window.ga.args[2], ['ec:addProduct', {
+            id: 'p-298',
+            name: 'my product',
+            category: 'cat 1',
+            quantity: 1,
+            price: 24.75,
+            brand: undefined,
+            variant: undefined,
+            currency: 'CAD',
+            coupon: 'promo'
+          }]);
+          analytics.deepEqual(window.ga.args[3], ['ec:addProduct', {
+            id: 'p-299',
+            name: 'other product',
+            category: 'cat 2',
+            quantity: 3,
+            price: 24.75,
+            brand: undefined,
+            variant: undefined,
+            currency: 'EUR'
+          }]);
+          analytics.deepEqual(window.ga.args[4], ['ec:setAction', 'purchase', {
+            id: '780bc55',
+            affiliation: 'affiliation',
+            revenue: 99.9,
+            tax: 20.99,
+            shipping: 13.99,
+            coupon: 'coupon'
+          }]);
+          analytics.deepEqual(window.ga.args[5], ['send', 'event', 'EnhancedEcommerce', 'completed order', { nonInteraction: 1 }]);
+        });
+
         it('completed order should fallback to revenue', function() {
           analytics.track('completed order', {
             orderId: '5d4c7cb5',
