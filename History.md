@@ -1,4 +1,9 @@
 
+1.1.0 / 2015-08-19
+==================
+
+  * support enhanced eccommerce to product coupon level
+
 1.0.5 / 2015-08-06
 ==================
 
