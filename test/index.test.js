@@ -532,9 +532,34 @@ describe('Google Analytics', function() {
           analytics.track('Level Unlocked', { loadTime: '100', levelAchieved: '5', referrer: 'Google' });
 
           analytics.called(window.ga, 'set', {
-            metric1: '100',
-            metric2: '5',
+            // metric1: '100',
+            // metric2: '5',
             dimension2: 'Google'
+          });
+
+          analytics.called(window.ga, 'send', 'event', {
+            eventCategory: 'All',
+            eventAction: 'Level Unlocked',
+            eventLabel: undefined,
+            eventValue: 0,
+            metric1: '100',
+            metric2: '5'
+          });
+        });
+
+        xit('should send an event with custom metrics and dimensions? Brantley', function() {
+          ga.options.metrics = { loadTime: 'metric1', levelAchieved: 'metric2' };
+          ga.options.dimensions = { referrer: 'dimension2' };
+          analytics.track('Level Unlocked', { loadTime: '100', levelAchieved: '5', referrer: 'Google' });
+
+          analytics.called(window.ga, 'send', 'event', {
+            eventCategory: 'All',
+            eventAction: 'Level Unlocked',
+            eventLabel: undefined,
+            eventValue: 0,
+            loadTime: '100',
+            levelAchieved: '5',
+            referrer: 'Google'
           });
         });
       });

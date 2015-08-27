@@ -15,7 +15,8 @@
     "component/object": "0.0.3",
     "segmentio/global-queue": "0.0.2",
     "component/select": "0.0.1",
-    "segmentio/use-https": "0.1.0"
+    "segmentio/use-https": "0.1.0",
+    "segmentio/extend": "1.0.0"
   },
   "development": {
     "segmentio/analytics.js-core": "^2.10.0",

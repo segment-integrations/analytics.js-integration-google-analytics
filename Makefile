@@ -52,7 +52,7 @@ distclean: clean
 
 # Build all integrations, tests, and dependencies together for testing.
 build.js: node_modules component.json $(SRCS) $(TESTS)
-	@$(DUO) --stdout --development $(TESTS) > $@
+	$(DUO) --stdout --development $(TESTS) > $@
 
 # Build shortcut.
 build: build.js
