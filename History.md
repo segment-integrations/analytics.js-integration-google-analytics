@@ -1,4 +1,9 @@
 
+1.1.2 / 2015-09-11
+==================
+
+  * stringify boolean custom metrics or dimensions
+
 1.1.0 / 2015-08-19
 ==================
 
