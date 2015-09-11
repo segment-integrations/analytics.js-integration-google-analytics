@@ -143,16 +143,18 @@ describe('Google Analytics', function() {
         });
 
         it('should map custom dimensions & metrics using user.traits()', function() {
-          ga.options.metrics = { firstName: 'metric1', last_name: 'metric2' };
-          ga.options.dimensions = { Age: 'dimension2' };
-          analytics.user().traits({ firstName: 'John', lastName: 'Doe', age: 20 });
+          ga.options.metrics = { firstName: 'metric1', last_name: 'metric2', foo: 'metric3' };
+          ga.options.dimensions = { Age: 'dimension2', bar: 'dimension3' };
+          analytics.user().traits({ firstName: 'John', lastName: 'Doe', age: 20, foo: true, bar: false });
           analytics.initialize();
           analytics.page();
 
           analytics.deepEqual(window.ga.q[2], ['set', {
             metric1: 'John',
             metric2: 'Doe',
-            dimension2: 20
+            metric3: 'true',
+            dimension2: 20,
+            dimension3: 'false'
           }]);
         });
 
