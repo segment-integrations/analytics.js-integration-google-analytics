@@ -212,7 +212,6 @@ describe('Google Analytics', function() {
       beforeEach(function(done) {
         analytics.once('ready', done);
         analytics.initialize();
-        analytics.page();
       });
 
       describe('#page', function() {
@@ -226,6 +225,20 @@ describe('Google Analytics', function() {
             page: window.location.pathname,
             title: document.title,
             location: window.location.protocol + '//' + window.location.hostname + (window.location.port ? ':' + window.location.port : '') + window.location.pathname + window.location.search
+          });
+        });
+
+        it('should omit location on subsequent page views', function() {
+          analytics.page();
+          analytics.called(window.ga, 'send', 'pageview', {
+            page: window.location.pathname,
+            title: document.title,
+            location: window.location.protocol + '//' + window.location.hostname + (window.location.port ? ':' + window.location.port : '') + window.location.pathname + window.location.search
+          });
+          analytics.page();
+          analytics.called(window.ga, 'send', 'pageview', {
+            page: window.location.pathname,
+            title: document.title
           });
         });
 
