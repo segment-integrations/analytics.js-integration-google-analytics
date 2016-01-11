@@ -44,6 +44,7 @@ describe('Google Analytics', function() {
       .option('siteSpeedSampleRate', 1)
       .option('trackCategorizedPages', true)
       .option('trackNamedPages', true)
+      .option('singlePageApplication', false)
       .option('trackingId', ''));
   });
 
@@ -372,6 +373,15 @@ describe('Google Analytics', function() {
           analytics.assert(window.ga.args[1][0] === 'send');
           analytics.assert(window.ga.args[2][0] === 'set');
           analytics.assert(window.ga.args[3][0] === 'send');
+        });
+
+        it('should not update the document location for Single Page Applications', function() {
+          ga.options.singlePageApplication = true;
+          analytics.page();
+          analytics.called(window.ga, 'send', 'pageview', {
+            page: window.location.pathname,
+            title: document.title
+          });
         });
       });
 
