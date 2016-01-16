@@ -259,6 +259,21 @@ describe('Google Analytics', function() {
           });
         });
 
+        it('should send a page view with content groupings', function() {
+          analytics.page('category', 'name', {
+            contentGroup1: 'Test 1',
+            contentGroup2: 'Test 2',
+            contentGroup3: 'Test 3',
+            contentGroup4: 'Test 4',
+            contentGroup5: 'Test 5'
+          });
+          analytics.called(window.ga, 'set', 'contentGroup1', 'Test 1');
+          analytics.called(window.ga, 'set', 'contentGroup2', 'Test 2');
+          analytics.called(window.ga, 'set', 'contentGroup3', 'Test 3');
+          analytics.called(window.ga, 'set', 'contentGroup4', 'Test 4');
+          analytics.called(window.ga, 'set', 'contentGroup5', 'Test 5');
+        });
+
         it('should send the query if its included', function() {
           ga.options.includeSearch = true;
           analytics.page('category', 'name', { url: 'url', path: '/path', search: '?q=1' });
