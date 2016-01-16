@@ -31,6 +31,7 @@ describe('Google Analytics', function() {
       .global('GoogleAnalyticsObject')
       .option('anonymizeIp', false)
       .option('classic', false)
+      .option('contentGroupings', {})
       .option('dimensions', {})
       .option('domain', 'auto')
       .option('doubleClick', false)
@@ -158,9 +159,10 @@ describe('Google Analytics', function() {
           }]);
         });
 
-        it('should not set metrics and dimensions if there are no traits', function() {
+        it('should not set metrics, dimensions and content groupings if there are no traits', function() {
           ga.options.metrics = { metric1: 'something' };
           ga.options.dimensions = { dimension3: 'industry' };
+          ga.options.contentGroupings = { contentGrouping1: 'foo' };
           analytics.initialize();
           analytics.page();
           analytics.deepEqual(window.ga.q[2], undefined);
@@ -292,15 +294,17 @@ describe('Google Analytics', function() {
           });
         });
 
-        it('should map custom dimensions & metrics using track.properties()', function() {
+        it('should map custom dimensions, metrics & content groupings using track.properties()', function() {
           ga.options.metrics = { score: 'metric1' };
           ga.options.dimensions = { author: 'dimension1', postType: 'dimension2' };
-          analytics.page({ score: 21, author: 'Author', postType: 'blog' });
+          ga.options.contentGroupings = { section: 'contentGrouping1' };
+          analytics.page({ score: 21, author: 'Author', postType: 'blog', section: 'News' });
 
           analytics.called(window.ga, 'set', {
             metric1: 21,
             dimension1: 'Author',
-            dimension2: 'blog'
+            dimension2: 'blog',
+            contentGrouping1: 'News'
           });
         });
 
