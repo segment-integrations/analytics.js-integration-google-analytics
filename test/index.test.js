@@ -1,4 +1,6 @@
 
+'use strict';
+
 var Analytics = require('analytics.js-core').constructor;
 var integration = require('analytics.js-integration');
 var sandbox = require('clear-env');
