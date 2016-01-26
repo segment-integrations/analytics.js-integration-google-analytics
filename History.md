@@ -1,4 +1,9 @@
 
+1.3.0 / 2016-01-26
+==================
+
+  * Adds support for setting content groupings via tracking code. Google Analytics supports 1-5 content groupings which are set in the same manner as metrics and dimensions. E.g. `ga('set', 'contentGroup<Index Number>', '<Group Name>');` This commit adds support for setting content groupings in the same way that metrics and dimensions are set.
+
 1.2.0 / 2016-01-12
 ==================
 
