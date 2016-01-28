@@ -308,6 +308,21 @@ describe('Google Analytics', function() {
           });
         });
 
+        it('should map custom dimensions, metrics & content groupings even if mapped to the same key', function() {
+          ga.options.metrics = { score: 'metric1' };
+          ga.options.dimensions = { author: 'dimension1', postType: 'dimension2' };
+          ga.options.contentGroupings = { section: 'contentGrouping1', score: 'contentGrouping5' };
+          analytics.page({ score: 21, author: 'Author', postType: 'blog', section: 'News' });
+
+          analytics.called(window.ga, 'set', {
+            metric1: 21,
+            dimension1: 'Author',
+            dimension2: 'blog',
+            contentGrouping1: 'News',
+            contentGrouping5: 21
+          });
+        });
+
         it('should track a named page', function() {
           analytics.page('Name');
           analytics.called(window.ga, 'send', 'event', {
