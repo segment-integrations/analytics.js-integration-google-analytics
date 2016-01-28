@@ -1,4 +1,9 @@
 
+1.3.1 / 2016-01-28
+==================
+
+  * refactor metrics/dimension/cg decoration factor to accomodate mapping the same property to multiple fields
+
 1.3.0 / 2016-01-26
 ==================
 
