@@ -829,7 +829,8 @@ describe('Google Analytics', function() {
             price: 24.75,
             name: 'my product',
             category: 'cat 1',
-            sku: 'p-298'
+            sku: 'p-298',
+            list: 'Apparel Gallery'
           });
 
           analytics.assert(window.ga.args.length === 5);
@@ -844,7 +845,9 @@ describe('Google Analytics', function() {
             variant: undefined,
             currency: 'CAD'
           }]);
-          analytics.deepEqual(window.ga.args[3], ['ec:setAction', 'detail', {}]);
+          analytics.deepEqual(window.ga.args[3], ['ec:setAction', 'detail', {
+            list: 'Apparel Gallery'
+          }]);
           analytics.deepEqual(window.ga.args[4], ['send', 'event', 'cat 1', 'viewed product', { nonInteraction: 1 }]);
         });
 
