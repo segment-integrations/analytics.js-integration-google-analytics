@@ -54,7 +54,7 @@ describe('Google Analytics', function() {
       anonymizeIp: true,
       domain: 'auto',
       siteSpeedSampleRate: 42,
-      sampleRate: 100,
+      sampleRate: 15,
       trackingId: 'UA-27033709-12'
     };
 
@@ -699,7 +699,6 @@ describe('Google Analytics', function() {
       anonymizeIp: true,
       domain: 'none',
       siteSpeedSampleRate: 42,
-      sampleRate: 100,
       trackingId: 'UA-27033709-12'
     };
 
@@ -1287,7 +1286,6 @@ describe('Google Analytics', function() {
       enhancedLinkAttribution: true,
       ignoredReferrers: ['domain.com', 'www.domain.com'],
       siteSpeedSampleRate: 42,
-      sampleRate: 100,
       trackingId: 'UA-27033709-5'
     };
 
