@@ -45,7 +45,8 @@ describe('Google Analytics', function() {
       .option('siteSpeedSampleRate', 1)
       .option('trackCategorizedPages', true)
       .option('trackNamedPages', true)
-      .option('trackingId', ''));
+      .option('trackingId', '')
+      .option('sampleRate', 100));
   });
 
   describe('Universal', function() {
@@ -53,6 +54,7 @@ describe('Google Analytics', function() {
       anonymizeIp: true,
       domain: 'auto',
       siteSpeedSampleRate: 42,
+      sampleRate: 15,
       trackingId: 'UA-27033709-12'
     };
 
@@ -112,6 +114,7 @@ describe('Google Analytics', function() {
           analytics.deepEqual(Array.prototype.slice.call(window.ga.q[0]), ['create', settings.trackingId, {
             cookieDomain: 'none',
             siteSpeedSampleRate: settings.siteSpeedSampleRate,
+            sampleRate: settings.sampleRate,
             allowLinker: true
           }]);
         });
