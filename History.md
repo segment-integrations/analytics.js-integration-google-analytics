@@ -1,4 +1,29 @@
 
+1.4.0 / 2016-02-13
+==================
+
+  * Merge pull request #21 from segment-integrations/add-sample-rate
+  * Added non default sampleRate.
+  * Added sampleRate.
+  * Release 1.3.2
+  * Merge pull request #19 from segment-integrations/add-list-prop-EE
+  * add optional list prop to EE events
+  * Release 1.3.1
+  * Merge pull request #18 from segment-integrations/fix/metrics
+  * refactor metrics/dimension/cg decoration factor to accomodate mapping the same property to multiple fields
+  * Release 1.3.0
+  * Merge pull request #16 from lukebussey/master
+  * Adds support for setting content groupings via tracking code. Google Analytics supports 1-5 content groupings which are set in the same manner as metrics and dimensions. E.g. `ga('set', 'contentGroup<Index Number>', '<Group Name>');` This commit adds support for setting content groupings in the same way that metrics and dimensions are set.
+  * Release 1.2.0
+  * Merge pull request #14 from segment-integrations/fix/single-page
+  * omit location from subsequent page() calls
+  * Release 1.1.2
+  * Merge pull request #11 from segment-integrations/stringify-booleans
+  * stringify booleans for cm
+  * Release 1.1.0
+  * Merge pull request #10 from segment-integrations/add-coupon-product-level
+  * support enhanced eccommerce product coupon level
+
 1.3.2 / 2016-02-03
 ==================
 
