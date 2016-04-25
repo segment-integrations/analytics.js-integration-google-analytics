@@ -395,6 +395,24 @@ describe('Google Analytics', function() {
           analytics.assert(window.ga.args[2][0] === 'set');
           analytics.assert(window.ga.args[3][0] === 'send');
         });
+
+        it('should override referrer when manually set', function() {
+          analytics.page({ referrer: 'http://lifeofpablo.com' });
+          analytics.called(window.ga, 'set', {
+            page: window.location.pathname,
+            title: document.title,
+            referrer: 'http://lifeofpablo.com'
+          });
+        });
+
+        it('should not override referrer if not manually set', function() {
+          document.referrer = 'http://houseofballoons.com';
+          analytics.page();
+          analytics.called(window.ga, 'set', {
+            page: window.location.pathname,
+            title: document.title
+          });
+        });
       });
 
       describe('#identify', function() {
