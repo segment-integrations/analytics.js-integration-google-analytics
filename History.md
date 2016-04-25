@@ -1,4 +1,9 @@
 
+1.4.1 / 2016-04-25
+==================
+
+  * add support for defensive referrer override
+
 1.4.0 / 2016-02-13
 ==================
 

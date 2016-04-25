@@ -2,7 +2,7 @@
   "name": "analytics.js-integration-google-analytics",
   "repo": "segment-integrations/analytics.js-integration-google-analytics",
   "description": "The Google Analytics analytics.js integration.",
-  "version": "1.4.0",
+  "version": "1.4.1",
   "license": "MIT",
   "main": "lib/index.js",
   "dependencies": {
