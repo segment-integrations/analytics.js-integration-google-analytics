@@ -1,4 +1,9 @@
 
+1.4.2 / 2016-04-28
+==================
+
+  * Changed props.category to track.category() so that it takes into account alternative casings.
+
 1.4.1 / 2016-04-25
 ==================
 
