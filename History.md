@@ -1,3 +1,7 @@
+1.4.3 / 2016-05-07
+==================
+
+  * Bump Analytics.js core, tester, integration to use Facade 2.x
 
 1.4.2 / 2016-04-28
 ==================
