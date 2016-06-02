@@ -456,7 +456,7 @@ describe('Google Analytics', function() {
         });
 
         it('should send an event and map category with a capital C', function() {
-          analytics.track('event', {Category: 'blah'});
+          analytics.track('event', { Category: 'blah' });
           analytics.called(window.ga, 'send', 'event', {
             eventCategory: 'blah',
             eventAction: 'event',
