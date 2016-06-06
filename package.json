@@ -1,6 +1,7 @@
 {
   "name": "analytics.js-integration-google-analytics",
   "description": "The Google Analytics analytics.js integration.",
+  "version": "1.4.3",
   "author": "Segment <friends@segment.com>",
   "license": "MIT",
   "main": "lib/index.js",
