@@ -20,7 +20,18 @@
     "url": "https://github.com/segment-integrations/analytics.js-integration-google-analytics/issues"
   },
   "homepage": "https://segment.com/docs/integrations/google-analytics/",
-  "dependencies": {},
+  "dependencies": {
+    "@segment/analytics.js-integration": "github:segmentio/analytics.js-integration",
+    "defaults": "^1.0.3",
+    "each": "^0.6.1",
+    "facade": "^0.1.2",
+    "global-queue": "^1.0.1",
+    "is": "^3.1.0",
+    "obj-case": "^0.2.0",
+    "object": "^0.1.1",
+    "select": "^1.0.6",
+    "use-https": "^0.1.1"
+  },
   "devDependencies": {
     "duo": "0.12.x",
     "duo-test": "0.2.x",
