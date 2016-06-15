@@ -19,7 +19,8 @@ module.exports = function(config) {
 
     client: {
       mocha: {
-        grep: process.env.GREP
+        grep: process.env.GREP,
+        timeout: 10000
       }
     },
 
