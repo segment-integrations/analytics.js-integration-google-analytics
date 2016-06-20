@@ -4,6 +4,7 @@ var Analytics = require('@segment/analytics.js-core').constructor;
 var integration = require('@segment/analytics.js-integration');
 var sandbox = require('@segment/clear-env');
 var tester = require('@segment/analytics.js-integration-tester');
+var toArray = require('to-array');
 var plugin = require('../lib/');
 
 describe('Google Analytics', function() {
@@ -78,14 +79,14 @@ describe('Google Analytics', function() {
           ga.options.doubleClick = true;
           analytics.initialize();
           analytics.page();
-          analytics.deepEqual(window.ga.q[1], ['require', 'displayfeatures']);
+          analytics.deepEqual(toArray(window.ga.q[1]), ['require', 'displayfeatures']);
         });
 
         it('should require "linkid.js" if enhanced link attribution is `true`', function() {
           ga.options.enhancedLinkAttribution = true;
           analytics.initialize();
           analytics.page();
-          analytics.deepEqual(window.ga.q[1], ['require', 'linkid', 'linkid.js']);
+          analytics.deepEqual(toArray(window.ga.q[1]), ['require', 'linkid', 'linkid.js']);
         });
 
         it('should create window.GoogleAnalyticsObject', function() {
@@ -123,7 +124,7 @@ describe('Google Analytics', function() {
         it('should anonymize the ip', function() {
           analytics.initialize();
           analytics.page();
-          analytics.deepEqual(window.ga.q[1], ['set', 'anonymizeIp', true]);
+          analytics.deepEqual(toArray(window.ga.q[1]), ['set', 'anonymizeIp', true]);
         });
 
         it('should call #load', function() {
@@ -136,7 +137,7 @@ describe('Google Analytics', function() {
           analytics.user().id('baz');
           analytics.initialize();
           analytics.page();
-          analytics.notDeepEqual(window.ga.q[1], ['set', 'userId', 'baz']);
+          analytics.notDeepEqual(toArray(window.ga.q[1]), ['set', 'userId', 'baz']);
         });
 
         it('should send universal user id if sendUserId option is true and user.id() is truthy', function() {
@@ -144,7 +145,7 @@ describe('Google Analytics', function() {
           ga.options.sendUserId = true;
           analytics.initialize();
           analytics.page();
-          analytics.deepEqual(window.ga.q[1], ['set', 'userId', 'baz']);
+          analytics.deepEqual(toArray(window.ga.q[1]), ['set', 'userId', 'baz']);
         });
 
         it('should map custom dimensions & metrics using user.traits()', function() {
@@ -154,7 +155,7 @@ describe('Google Analytics', function() {
           analytics.initialize();
           analytics.page();
 
-          analytics.deepEqual(window.ga.q[2], ['set', {
+          analytics.deepEqual(toArray(window.ga.q[2]), ['set', {
             metric1: 'John',
             metric2: 'Doe',
             metric3: 'true',
@@ -169,7 +170,7 @@ describe('Google Analytics', function() {
           ga.options.contentGroupings = { contentGrouping1: 'foo' };
           analytics.initialize();
           analytics.page();
-          analytics.deepEqual(window.ga.q[2], undefined);
+          analytics.deepEqual(toArray(window.ga.q[2]), undefined);
         });
 
         it('should set metrics and dimensions that have dots but arent nested', function() {
@@ -179,7 +180,7 @@ describe('Google Analytics', function() {
           analytics.initialize();
           analytics.page();
 
-          analytics.deepEqual(window.ga.q[2], ['set', {
+          analytics.deepEqual(toArray(window.ga.q[2]), ['set', {
             metric1: 'John',
             metric2: 'Doe',
             dimension2: 20
@@ -199,7 +200,7 @@ describe('Google Analytics', function() {
           analytics.initialize();
           analytics.page();
 
-          analytics.deepEqual(window.ga.q[2], ['set', {
+          analytics.deepEqual(toArray(window.ga.q[2]), ['set', {
             metric1: 'John',
             metric2: 'Doe',
             dimension2: 20

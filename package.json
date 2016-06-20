@@ -57,6 +57,7 @@
     "mocha": "^2.2.5",
     "npm-check": "^5.2.1",
     "phantomjs-prebuilt": "^2.1.7",
+    "to-array": "^0.1.4",
     "watchify": "^3.7.0"
   }
 }
