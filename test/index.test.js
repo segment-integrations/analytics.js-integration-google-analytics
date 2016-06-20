@@ -18,10 +18,11 @@ describe('Google Analytics', function() {
     analytics.use(tester);
   });
 
-  afterEach(function() {
+  afterEach(function(done) {
     analytics.restore();
     analytics.reset();
     sandbox();
+    done();
   });
 
   it('should have the right settings', function() {
@@ -65,8 +66,9 @@ describe('Google Analytics', function() {
       analytics.add(ga);
     });
 
-    afterEach(function() {
+    afterEach(function(done) {
       ga.reset();
+      done();
     });
 
     describe('before loading', function() {
@@ -170,7 +172,7 @@ describe('Google Analytics', function() {
           ga.options.contentGroupings = { contentGrouping1: 'foo' };
           analytics.initialize();
           analytics.page();
-          analytics.deepEqual(toArray(window.ga.q[2]), undefined);
+          analytics.deepEqual(window.ga.q[2], undefined);
         });
 
         it('should set metrics and dimensions that have dots but arent nested', function() {
@@ -738,8 +740,9 @@ describe('Google Analytics', function() {
       analytics.add(ga);
     });
 
-    afterEach(function() {
+    afterEach(function(done) {
       ga.reset();
+      done();
     });
 
     describe('after loading', function() {
@@ -1325,8 +1328,9 @@ describe('Google Analytics', function() {
       analytics.add(ga);
     });
 
-    afterEach(function() {
+    afterEach(function(done) {
       ga.reset();
+      done();
     });
 
     describe('before loading', function() {
