@@ -800,7 +800,7 @@ describe('Google Analytics', function() {
             variant: undefined,
             currency: 'CAD'
           }]);
-          analytics.deepEqual(toArray(window.ga.args[3]), ['ec:setAction', 'add', {}]);
+          analytics.deepEqual(toArray(window.ga.args[3]), ['ec:setAction', 'add', { action: 'add' }]);
           analytics.deepEqual(toArray(window.ga.args[4]), ['send', 'event', 'cat 1', 'added product', { nonInteraction: 1 }]);
         });
 
@@ -827,7 +827,7 @@ describe('Google Analytics', function() {
             variant: undefined,
             currency: 'CAD'
           }]);
-          analytics.deepEqual(toArray(window.ga.args[3]), ['ec:setAction', 'add', {}]);
+          analytics.deepEqual(toArray(window.ga.args[3]), ['ec:setAction', 'add', { action: 'add' }]);
           analytics.deepEqual(toArray(window.ga.args[4]), ['send', 'event', 'cat 1', 'added product', 'sample label', { nonInteraction: 1 }]);
         });
 
@@ -853,7 +853,7 @@ describe('Google Analytics', function() {
             variant: undefined,
             currency: 'CAD'
           }]);
-          analytics.deepEqual(toArray(window.ga.args[3]), ['ec:setAction', 'remove', {}]);
+          analytics.deepEqual(toArray(window.ga.args[3]), ['ec:setAction', 'remove', { action: 'remove' }]);
           analytics.deepEqual(toArray(window.ga.args[4]), ['send', 'event', 'cat 1', 'removed product', { nonInteraction: 1 }]);
         });
 
@@ -880,9 +880,7 @@ describe('Google Analytics', function() {
             variant: undefined,
             currency: 'CAD'
           }]);
-          analytics.deepEqual(toArray(window.ga.args[3]), ['ec:setAction', 'detail', {
-            list: 'Apparel Gallery'
-          }]);
+          analytics.deepEqual(toArray(window.ga.args[3]), ['ec:setAction', 'detail', { action: 'detail', list: 'Apparel Gallery' }]);
           analytics.deepEqual(toArray(window.ga.args[4]), ['send', 'event', 'cat 1', 'viewed product', { nonInteraction: 1 }]); analytics.assert(window.ga.args[1][0] === 'set');
         });
 
@@ -909,9 +907,7 @@ describe('Google Analytics', function() {
             variant: undefined,
             currency: 'CAD'
           }]);
-          analytics.deepEqual(toArray(window.ga.args[3]), ['ec:setAction', 'click', {
-            list: 'search results'
-          }]);
+          analytics.deepEqual(toArray(window.ga.args[3]), ['ec:setAction', 'click', { action: 'click', list: 'search results' }]);
           analytics.deepEqual(toArray(window.ga.args[4]), ['send', 'event', 'cat 1', 'clicked product', { nonInteraction: 1 }]);
         });
 
@@ -952,7 +948,7 @@ describe('Google Analytics', function() {
             creative: 'summer_banner2',
             position: 'banner_slot1'
           }]);
-          analytics.deepEqual(toArray(window.ga.args[3]), ['ec:setAction', 'promo_click', {}]);
+          analytics.deepEqual(toArray(window.ga.args[3]), ['ec:setAction', 'promo_click', { promoAction: 'click' }]);
           analytics.deepEqual(toArray(window.ga.args[4]), ['send', 'event', 'EnhancedEcommerce', 'clicked promotion', { nonInteraction: 1 }]);
         });
 
@@ -996,6 +992,7 @@ describe('Google Analytics', function() {
             currency: 'CAD'
           }]);
           analytics.deepEqual(toArray(window.ga.args[4]), ['ec:setAction', 'checkout', {
+            action: 'checkout',
             step: 1,
             option: 'Visa'
           }]);
@@ -1045,6 +1042,7 @@ describe('Google Analytics', function() {
             currency: 'CAD'
           }]);
           analytics.deepEqual(toArray(window.ga.args[4]), ['ec:setAction', 'checkout', {
+            action: 'checkout',
             step: 1,
             option: 'Visa'
           }]);
@@ -1060,6 +1058,7 @@ describe('Google Analytics', function() {
           analytics.assert(window.ga.args.length === 4);
           analytics.deepEqual(toArray(window.ga.args[1]), ['set', '&cu', 'CAD']);
           analytics.deepEqual(toArray(window.ga.args[2]), ['ec:setAction', 'checkout', {
+            action: 'checkout',
             step: 2,
             option: undefined
           }]);
@@ -1076,6 +1075,7 @@ describe('Google Analytics', function() {
           analytics.assert(window.ga.args.length === 4);
           analytics.deepEqual(toArray(window.ga.args[1]), ['set', '&cu', 'CAD']);
           analytics.deepEqual(toArray(window.ga.args[2]), ['ec:setAction', 'checkout_option', {
+            action: 'checkout_option',
             step: 2,
             option: 'FedEx'
           }]);
@@ -1093,6 +1093,7 @@ describe('Google Analytics', function() {
           analytics.assert(window.ga.args.length === 4);
           analytics.deepEqual(toArray(window.ga.args[1]), ['set', '&cu', 'CAD']);
           analytics.deepEqual(toArray(window.ga.args[2]), ['ec:setAction', 'checkout_option', {
+            action: 'checkout_option',
             step: 2,
             option: 'Visa, FedEx'
           }]);
@@ -1121,6 +1122,7 @@ describe('Google Analytics', function() {
           analytics.track('completed order', { orderId: '7306cc06' });
           analytics.assert(window.ga.args.length === 4);
           analytics.deepEqual(toArray(window.ga.args[2]), ['ec:setAction', 'purchase', {
+            action: 'purchase',
             id: '7306cc06',
             affiliation: undefined,
             revenue: 0.0,
@@ -1179,6 +1181,7 @@ describe('Google Analytics', function() {
             currency: 'EUR'
           }]);
           analytics.deepEqual(toArray(window.ga.args[4]), ['ec:setAction', 'purchase', {
+            action: 'purchase',
             id: '780bc55',
             affiliation: 'affiliation',
             revenue: 99.9,
@@ -1239,6 +1242,7 @@ describe('Google Analytics', function() {
             currency: 'EUR'
           }]);
           analytics.deepEqual(toArray(window.ga.args[4]), ['ec:setAction', 'purchase', {
+            action: 'purchase',
             id: '780bc55',
             affiliation: 'affiliation',
             revenue: 99.9,
@@ -1259,6 +1263,7 @@ describe('Google Analytics', function() {
           });
 
           analytics.deepEqual(toArray(window.ga.args[2]), ['ec:setAction', 'purchase', {
+            action: 'purchase',
             id: '5d4c7cb5',
             affiliation: undefined,
             revenue: 99.9,
@@ -1273,6 +1278,7 @@ describe('Google Analytics', function() {
 
           analytics.assert(window.ga.args.length === 4);
           analytics.deepEqual(toArray(window.ga.args[2]), ['ec:setAction', 'refund', {
+            action: 'refund',
             id: '780bc55'
           }]);
           analytics.deepEqual(toArray(window.ga.args[3]), ['send', 'event', 'EnhancedEcommerce', 'refunded order', { nonInteraction: 1 }]);
@@ -1300,6 +1306,7 @@ describe('Google Analytics', function() {
             quantity: 2
           }]);
           analytics.deepEqual(toArray(window.ga.args[4]), ['ec:setAction', 'refund', {
+            action: 'refund',
             id: '780bc55'
           }]);
           analytics.deepEqual(toArray(window.ga.args[5]), ['send', 'event', 'EnhancedEcommerce', 'refunded order', { nonInteraction: 1 }]);
