@@ -800,8 +800,8 @@ describe('Google Analytics', function() {
             variant: undefined,
             currency: 'CAD'
           }]);
-          analytics.deepEqual(window.ga.args[3], ['ec:setAction', 'add', { action: 'add' }]);
-          analytics.deepEqual(window.ga.args[4], ['send', 'event', 'cat 1', 'product added', { nonInteraction: 1 }]);
+          analytics.deepEqual(toArray(window.ga.args[3]), ['ec:setAction', 'add', { action: 'add' }]);
+          analytics.deepEqual(toArray(window.ga.args[4]), ['send', 'event', 'cat 1', 'product added', { nonInteraction: 1 }]);
         });
 
         it('should send send label tracking enhanced ecommerce events with Univeral Analytics', function() {
@@ -827,8 +827,8 @@ describe('Google Analytics', function() {
             variant: undefined,
             currency: 'CAD'
           }]);
-          analytics.deepEqual(window.ga.args[3], ['ec:setAction', 'add', { action: 'add' }]);
-          analytics.deepEqual(window.ga.args[4], ['send', 'event', 'cat 1', 'product added', 'sample label', { nonInteraction: 1 }]);
+          analytics.deepEqual(toArray(window.ga.args[3]), ['ec:setAction', 'add', { action: 'add' }]);
+          analytics.deepEqual(toArray(window.ga.args[4]), ['send', 'event', 'cat 1', 'product added', 'sample label', { nonInteraction: 1 }]);
         });
 
         it('should send product removed data', function() {
@@ -853,8 +853,8 @@ describe('Google Analytics', function() {
             variant: undefined,
             currency: 'CAD'
           }]);
-          analytics.deepEqual(window.ga.args[3], ['ec:setAction', 'remove', { action: 'remove' }]);
-          analytics.deepEqual(window.ga.args[4], ['send', 'event', 'cat 1', 'product removed', { nonInteraction: 1 }]);
+          analytics.deepEqual(toArray(window.ga.args[3]), ['ec:setAction', 'remove', { action: 'remove' }]);
+          analytics.deepEqual(toArray(window.ga.args[4]), ['send', 'event', 'cat 1', 'product removed', { nonInteraction: 1 }]);
         });
 
         it('should send product viewed data', function() {
@@ -880,8 +880,8 @@ describe('Google Analytics', function() {
             variant: undefined,
             currency: 'CAD'
           }]);
-          analytics.deepEqual(window.ga.args[3], ['ec:setAction', 'detail', { action: 'detail', list: 'Apparel Gallery' }]);
-          analytics.deepEqual(window.ga.args[4], ['send', 'event', 'cat 1', 'product viewed', { nonInteraction: 1 }]);
+          analytics.deepEqual(toArray(window.ga.args[3]), ['ec:setAction', 'detail', { action: 'detail', list: 'Apparel Gallery' }]);
+          analytics.deepEqual(toArray(window.ga.args[4]), ['send', 'event', 'cat 1', 'product viewed', { nonInteraction: 1 }]);
           analytics.assert(window.ga.args[1][0] === 'set');
         });
 
@@ -908,8 +908,8 @@ describe('Google Analytics', function() {
             variant: undefined,
             currency: 'CAD'
           }]);
-          analytics.deepEqual(window.ga.args[3], ['ec:setAction', 'click', { action: 'click', list: 'search results' }]);
-          analytics.deepEqual(window.ga.args[4], ['send', 'event', 'cat 1', 'product clicked', { nonInteraction: 1 }]);
+          analytics.deepEqual(toArray(window.ga.args[3]), ['ec:setAction', 'click', { action: 'click', list: 'search results' }]);
+          analytics.deepEqual(toArray(window.ga.args[4]), ['send', 'event', 'cat 1', 'product clicked', { nonInteraction: 1 }]);
         });
 
         it('should send promotion viewed data', function() {
@@ -929,7 +929,7 @@ describe('Google Analytics', function() {
             creative: 'summer_banner2',
             position: 'banner_slot1'
           }]);
-          analytics.deepEqual(window.ga.args[3], ['send', 'event', 'EnhancedEcommerce', 'promotion viewed', { nonInteraction: 1 }]);
+          analytics.deepEqual(toArray(window.ga.args[3]), ['send', 'event', 'EnhancedEcommerce', 'promotion viewed', { nonInteraction: 1 }]);
         });
 
         it('should send promotion clicked data', function() {
@@ -949,8 +949,8 @@ describe('Google Analytics', function() {
             creative: 'summer_banner2',
             position: 'banner_slot1'
           }]);
-          analytics.deepEqual(window.ga.args[3], ['ec:setAction', 'promo_click', { promoAction: 'click' }]);
-          analytics.deepEqual(window.ga.args[4], ['send', 'event', 'EnhancedEcommerce', 'promotion clicked', { nonInteraction: 1 }]);
+          analytics.deepEqual(toArray(window.ga.args[3]), ['ec:setAction', 'promo_click', { promoAction: 'click' }]);
+          analytics.deepEqual(toArray(window.ga.args[4]), ['send', 'event', 'EnhancedEcommerce', 'promotion clicked', { nonInteraction: 1 }]);
         });
 
         it('should send order started data', function() {
@@ -997,7 +997,7 @@ describe('Google Analytics', function() {
             step: 1,
             option: 'Visa'
           }]);
-          analytics.deepEqual(window.ga.args[5], ['send', 'event', 'EnhancedEcommerce', 'order started', { nonInteraction: 1 }]);
+          analytics.deepEqual(toArray(window.ga.args[5]), ['send', 'event', 'EnhancedEcommerce', 'order started', { nonInteraction: 1 }]);
         });
 
         it('should send order updated data', function() {
@@ -1046,7 +1046,7 @@ describe('Google Analytics', function() {
             step: 1,
             option: 'Visa'
           }]);
-          analytics.deepEqual(window.ga.args[5], ['send', 'event', 'EnhancedEcommerce', 'order updated', { nonInteraction: 1 }]);
+          analytics.deepEqual(toArray(window.ga.args[5]), ['send', 'event', 'EnhancedEcommerce', 'order updated', { nonInteraction: 1 }]);
         });
 
         it('should send checkout step viewed data', function() {
@@ -1062,7 +1062,7 @@ describe('Google Analytics', function() {
             step: 2,
             option: undefined
           }]);
-          analytics.deepEqual(window.ga.args[3], ['send', 'event', 'EnhancedEcommerce', 'checkout step viewed', { nonInteraction: 1 }]);
+          analytics.deepEqual(toArray(window.ga.args[3]), ['send', 'event', 'EnhancedEcommerce', 'checkout step viewed', { nonInteraction: 1 }]);
         });
 
         it('should send checkout step completed data', function() {
@@ -1130,7 +1130,7 @@ describe('Google Analytics', function() {
             shipping: undefined,
             coupon: undefined
           }]);
-          analytics.deepEqual(window.ga.args[3], ['send', 'event', 'EnhancedEcommerce', 'order completed', { nonInteraction: 1 }]);
+          analytics.deepEqual(toArray(window.ga.args[3]), ['send', 'event', 'EnhancedEcommerce', 'order completed', { nonInteraction: 1 }]);
         });
 
         it('should send order completed data', function() {
@@ -1189,7 +1189,7 @@ describe('Google Analytics', function() {
             shipping: 13.99,
             coupon: 'coupon'
           }]);
-          analytics.deepEqual(window.ga.args[5], ['send', 'event', 'EnhancedEcommerce', 'order completed', { nonInteraction: 1 }]);
+          analytics.deepEqual(toArray(window.ga.args[5]), ['send', 'event', 'EnhancedEcommerce', 'order completed', { nonInteraction: 1 }]);
         });
 
         it('should add coupon to product level in order completed', function() {
@@ -1250,7 +1250,7 @@ describe('Google Analytics', function() {
             shipping: 13.99,
             coupon: 'coupon'
           }]);
-          analytics.deepEqual(window.ga.args[5], ['send', 'event', 'EnhancedEcommerce', 'order completed', { nonInteraction: 1 }]);
+          analytics.deepEqual(toArray(window.ga.args[5]), ['send', 'event', 'EnhancedEcommerce', 'order completed', { nonInteraction: 1 }]);
         });
 
         it('order completed should fallback to revenue', function() {
@@ -1281,7 +1281,7 @@ describe('Google Analytics', function() {
             action: 'refund',
             id: '780bc55'
           }]);
-          analytics.deepEqual(window.ga.args[3], ['send', 'event', 'EnhancedEcommerce', 'order refunded', { nonInteraction: 1 }]);
+          analytics.deepEqual(toArray(window.ga.args[3]), ['send', 'event', 'EnhancedEcommerce', 'order refunded', { nonInteraction: 1 }]);
         });
 
         it('should send partial order refunded data', function() {
@@ -1309,7 +1309,7 @@ describe('Google Analytics', function() {
             action: 'refund',
             id: '780bc55'
           }]);
-          analytics.deepEqual(window.ga.args[5], ['send', 'event', 'EnhancedEcommerce', 'order refunded', { nonInteraction: 1 }]);
+          analytics.deepEqual(toArray(window.ga.args[5]), ['send', 'event', 'EnhancedEcommerce', 'order refunded', { nonInteraction: 1 }]);
         });
       });
     });
