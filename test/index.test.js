@@ -954,7 +954,7 @@ describe('Google Analytics', function() {
         });
 
         it('should send order started data', function() {
-          analytics.track('order started', {
+          analytics.track('checkout started', {
             currency: 'CAD',
             products: [{
               quantity: 1,
@@ -997,7 +997,7 @@ describe('Google Analytics', function() {
             step: 1,
             option: 'Visa'
           }]);
-          analytics.deepEqual(toArray(window.ga.args[5]), ['send', 'event', 'EnhancedEcommerce', 'order started', { nonInteraction: 1 }]);
+          analytics.deepEqual(toArray(window.ga.args[5]), ['send', 'event', 'EnhancedEcommerce', 'checkout started', { nonInteraction: 1 }]);
         });
 
         it('should send order updated data', function() {
