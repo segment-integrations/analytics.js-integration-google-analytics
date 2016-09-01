@@ -915,7 +915,7 @@ describe('Google Analytics', function() {
         it('should send promotion viewed data', function() {
           analytics.track('promotion viewed', {
             currency: 'CAD',
-            id: 'PROMO_1234',
+            promotion_id: 'PROMO_1234',
             name: 'Summer Sale',
             creative: 'summer_banner2',
             position: 'banner_slot1'
@@ -935,7 +935,7 @@ describe('Google Analytics', function() {
         it('should send promotion clicked data', function() {
           analytics.track('promotion clicked', {
             currency: 'CAD',
-            id: 'PROMO_1234',
+            promotion_id: 'PROMO_1234',
             name: 'Summer Sale',
             creative: 'summer_banner2',
             position: 'banner_slot1'

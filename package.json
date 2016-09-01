@@ -31,7 +31,7 @@
     "obj-case": "^0.2.0",
     "object-component": "0.0.3",
     "reject": "0.0.1",
-    "segmentio-facade": "^3.0.3",
+    "segmentio-facade": "^3.1.0",
     "use-https": "^0.1.1"
   },
   "devDependencies": {
