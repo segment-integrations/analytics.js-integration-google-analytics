@@ -50,6 +50,7 @@ describe('Google Analytics', function() {
       .option('trackCategorizedPages', true)
       .option('trackNamedPages', true)
       .option('trackingId', '')
+      .option('optimize', '')
       .option('sampleRate', 100));
   });
 
@@ -124,6 +125,13 @@ describe('Google Analytics', function() {
           analytics.initialize();
           analytics.page();
           analytics.deepEqual(toArray(window.ga.q[0]), ['create', settings.trackingId, expectedOpts]);
+        });
+
+        it('should call window.ga.require for optimize if enabled', function() {
+          ga.options.optimize = 'GTM-XXXXX';
+          analytics.initialize();
+          analytics.page();
+          analytics.deepEqual(toArray(window.ga.q[1]), ['require', 'GTM-XXXXX']);
         });
 
         it('should anonymize the ip', function() {
