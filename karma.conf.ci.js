@@ -32,16 +32,17 @@ var customLaunchers = {
     browserName: 'safari',
     version: '9.0'
   },
-  sl_ie_7: {
-    base: 'SauceLabs',
-    browserName: 'internet explorer',
-    version: '7'
-  },
-  sl_ie_8: {
-    base: 'SauceLabs',
-    browserName: 'internet explorer',
-    version: '8'
-  },
+  // FIXME(ndhoule): Bad IE7/8 support in testing packages make these fail
+  // sl_ie_7: {
+  //   base: 'SauceLabs',
+  //   browserName: 'internet explorer',
+  //   version: '7'
+  // },
+  // sl_ie_8: {
+  //   base: 'SauceLabs',
+  //   browserName: 'internet explorer',
+  //   version: '8'
+  // },
   sl_ie_9: {
     base: 'SauceLabs',
     browserName: 'internet explorer',
