@@ -1,7 +1,7 @@
 {
   "name": "@segment/analytics.js-integration-google-analytics",
   "description": "The Google Analytics analytics.js integration.",
-  "version": "2.2.0",
+  "version": "2.3.0",
   "keywords": [
     "analytics.js",
     "analytics.js-integration",
@@ -50,7 +50,7 @@
     "karma-chrome-launcher": "^1.0.1",
     "karma-coverage": "^1.0.0",
     "karma-junit-reporter": "^1.0.0",
-    "karma-mocha": "^1.0.1",
+    "karma-mocha": "1.0.1",
     "karma-phantomjs-launcher": "^1.0.0",
     "karma-sauce-launcher": "^1.0.0",
     "karma-spec-reporter": "0.0.26",
