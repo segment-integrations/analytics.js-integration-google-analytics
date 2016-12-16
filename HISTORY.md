@@ -1,4 +1,9 @@
 
+2.3.1 / 2016-12-15
+==================
+
+  * Fix bug regaurding casing of shipping and payment method properties
+
 2.3.0 / 2016-12-08
 ==================
 
