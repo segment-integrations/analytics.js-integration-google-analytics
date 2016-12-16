@@ -1103,6 +1103,23 @@ describe('Google Analytics', function() {
           analytics.deepEqual(toArray(window.ga.args[3]), ['send', 'event', 'Checkout', 'Option']);
         });
 
+        it('should send checkout step completed data with all options in snake_case', function() {
+          analytics.track('checkout step completed', {
+            currency: 'CAD',
+            step: 2,
+            payment_method: 'Visa',
+            shipping_method: 'FedEx'
+          });
+
+          analytics.assert(window.ga.args.length === 4);
+          analytics.deepEqual(toArray(window.ga.args[1]), ['set', '&cu', 'CAD']);
+          analytics.deepEqual(toArray(window.ga.args[2]), ['ec:setAction', 'checkout_option', {
+            step: 2,
+            option: 'Visa, FedEx'
+          }]);
+          analytics.deepEqual(toArray(window.ga.args[3]), ['send', 'event', 'Checkout', 'Option']);
+        });
+
         it('should not send checkout step completed data without a step', function() {
           analytics.track('checkout step completed', {
             currency: 'CAD',
