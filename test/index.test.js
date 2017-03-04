@@ -893,6 +893,61 @@ describe('Google Analytics', function() {
           analytics.assert(window.ga.args[1][0] === 'set');
         });
 
+        it('should send product impression data via product list viewed', function() {
+          // If using addImpression ever becomes optional, will need to add a setting modification here.
+          analytics.track('Product List Viewed', {
+            category: 'cat 1',
+            list_id: '1234',
+            products: [
+              { product_id: '507f1f77bcf86cd799439011' }
+            ]
+          });
+          analytics.assert(window.ga.args.length === 5);
+          analytics.deepEqual(toArray(window.ga.args[1]), ['set', '&cu', 'USD']);
+          analytics.deepEqual(toArray(window.ga.args[2]), ['ec:addImpression', {
+            id: '507f1f77bcf86cd799439011',
+            category: 'cat 1',
+            list: '1234',
+            position: 1
+          }]);
+          analytics.deepEqual(toArray(window.ga.args[3]), ['send', 'pageview']);
+          analytics.deepEqual(toArray(window.ga.args[4]), ['send', 'event', 'cat 1', 'Product List Viewed', { nonInteraction: 1 }]);
+        });
+
+        it('should send product impression data via product list filtered', function() {
+          // If using addImpression ever becomes optional, will need to add a setting modification here.
+          analytics.track('Product List Filtered', {
+            category: 'cat 1',
+            list_id: '1234',
+            filters: [    {
+              type: 'department',
+              value: 'beauty'
+            },
+            {
+              type: 'price',
+              value: 'under'
+            }],
+            sorters:[ {
+              type: 'price',
+              value: 'desc'
+            }],
+            products: [
+              { product_id: '507f1f77bcf86cd799439011' }
+            ]
+          });
+          analytics.assert(window.ga.args.length === 5);
+          analytics.deepEqual(toArray(window.ga.args[1]), ['set', '&cu', 'USD']);
+          analytics.deepEqual(toArray(window.ga.args[2]), ['ec:addImpression', {
+            id: '507f1f77bcf86cd799439011',
+            category: 'cat 1',
+            list: '1234',
+            position: 1,
+            variant: 'department:beauty,price:under::price:desc'
+          }]);
+          analytics.deepEqual(toArray(window.ga.args[3]), ['send', 'pageview']);
+          analytics.deepEqual(toArray(window.ga.args[4]), ['send', 'event', 'cat 1', 'Product List Filtered', { nonInteraction: 1 }]);
+        });
+
         it('should send product clicked data', function() {
           analytics.track('product clicked', {
             currency: 'CAD',
