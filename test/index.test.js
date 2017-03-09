@@ -927,7 +927,7 @@ describe('Google Analytics', function() {
               type: 'price',
               value: 'under'
             }],
-            sorters:[ {
+            sorts:[ {
               type: 'price',
               value: 'desc'
             }],
