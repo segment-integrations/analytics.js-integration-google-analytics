@@ -72,7 +72,7 @@ module.exports = function(config) {
   }
 
   config.set({
-    //FIXME(peripheral1994): Builds as of 2017-03-07 are having problems with disconnects. Attempting to rectify.
+    // FIXME(peripheral1994): Builds as of 2017-03-07 are having problems with disconnects. Attempting to rectify.
     browserDisconnectTolerance: 3,
 
     singleRun: true,
