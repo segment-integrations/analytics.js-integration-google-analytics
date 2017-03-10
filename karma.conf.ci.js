@@ -72,8 +72,7 @@ module.exports = function(config) {
   }
 
   config.set({
-    // FIXME(peripheral1994): Builds as of 2017-03-07 are having problems with disconnects. Attempting to rectify.
-    browserDisconnectTolerance: 3,
+    browserDisconnectTolerance: 1,
 
     singleRun: true,
 
@@ -90,12 +89,14 @@ module.exports = function(config) {
 
     sauceLabs: {
       testName: require('./package.json').name
-    },
-
+    }
+    // Disabling coverage tests to see effects.
+    /*
     coverageReporter: {
       reporters: [
         { type: 'lcov' }
       ]
     }
+    */
   });
 };

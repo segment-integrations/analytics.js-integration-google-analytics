@@ -11,16 +11,12 @@ machine:
 dependencies:
   pre:
     - npm config set "//registry.npmjs.org/:_authToken" $NPM_AUTH
-    - npm -g install codecov
   override:
     - make install
 
 test:
   override:
     - make test
-  post:
-    - cp -R coverage $CIRCLE_ARTIFACTS/
-    - codecov
 
 deployment:
   publish:
