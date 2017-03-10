@@ -1,5 +1,8 @@
 'use strict';
 
+// FIXME(peripheral1994): Temp fix to get around IE9/Edge14 CircleCI tests failing
+global.console.warn = function() {};
+
 var Analytics = require('@segment/analytics.js-core').constructor;
 var integration = require('@segment/analytics.js-integration');
 var sandbox = require('@segment/clear-env');
