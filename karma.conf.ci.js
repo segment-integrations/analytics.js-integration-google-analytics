@@ -43,11 +43,11 @@ var customLaunchers = {
   //   browserName: 'internet explorer',
   //   version: '8'
   // },
-  //sl_ie_9: {
-  //  base: 'SauceLabs',
-  //  browserName: 'internet explorer',
-  //  version: '9'
-  //},
+  // sl_ie_9: {
+  //   base: 'SauceLabs',
+  //   browserName: 'internet explorer',
+  //   version: '9'
+  // },
   sl_ie_10: {
     base: 'SauceLabs',
     browserName: 'internet explorer',
@@ -59,10 +59,10 @@ var customLaunchers = {
     version: '11'
   }
   // FIXME(peripheral1994): New builds have caused Edge14 and IE9 to fail incorrectly.
-  //sl_edge_latest: {
-  //  base: 'SauceLabs',
-  //  browserName: 'microsoftedge'
-  //}
+  // sl_edge_latest: {
+  //   base: 'SauceLabs',
+  //   browserName: 'microsoftedge'
+  // }
 };
 
 module.exports = function(config) {
