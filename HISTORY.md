@@ -1,3 +1,9 @@
+2.4.1 / 2017-03-09
+==================
+
+  * Renamed 'sorters' to 'sorts' to match spec
+  * Protected against non-array inputs
+
 2.4.0 / 2017-03-07
 ==================
 
