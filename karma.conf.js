@@ -10,8 +10,8 @@ module.exports = function(config) {
     browsers: ['PhantomJS'],
 
     frameworks: ['browserify', 'mocha'],
-    // FIXME(peripheral1994): Disabling coverage to debug
-    // reporters: ['spec', 'coverage'],
+
+    reporters: ['spec', 'coverage'],
 
     preprocessors: {
       'test/**/*.js': 'browserify'
@@ -37,9 +37,8 @@ module.exports = function(config) {
           }
         ]
       ]
-    }
-    // FIXME(peripheral1994): Disabling coverage to debug
-    /*
+    },
+
     coverageReporter: {
       reporters: [
         { type: 'text' },
@@ -47,6 +46,5 @@ module.exports = function(config) {
         { type: 'json' }
       ]
     }
-    */
   });
 };
