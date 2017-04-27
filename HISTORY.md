@@ -1,3 +1,8 @@
+2.5.0 / 2017-04-27
+==================
+
+  * Allow user to override global nonInteraction setting
+
 2.4.1 / 2017-03-09
 ==================
 
