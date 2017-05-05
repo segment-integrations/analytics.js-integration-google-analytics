@@ -603,6 +603,18 @@ describe('Google Analytics', function() {
           });
         });
 
+        it('should give precendence to a non-interaction option defined in the event props', function() {
+          ga.options.nonInteraction = true;
+          analytics.track('event', { nonInteraction: false });
+          analytics.called(window.ga, 'send', 'event', {
+            eventCategory: 'All',
+            eventAction: 'event',
+            eventLabel: undefined,
+            eventValue: 0,
+            nonInteraction: false
+          });
+        });
+
         it('should map custom dimensions & metrics using track.properties()', function() {
           ga.options.metrics = { loadTime: 'metric1', levelAchieved: 'metric2' };
           ga.options.dimensions = { referrer: 'dimension2' };
