@@ -943,7 +943,6 @@ describe('Google Analytics', function() {
             position: 1,
             variant: 'department:beauty,price:under::price:desc'
           }]);
-          console.log(window.ga.args[3]);
           analytics.deepEqual(toArray(window.ga.args[3]), ['send', 'event', 'cat 1', 'Product List Filtered', { nonInteraction: 1 }]);
         });
 
