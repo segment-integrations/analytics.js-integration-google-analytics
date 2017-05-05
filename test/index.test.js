@@ -902,7 +902,7 @@ describe('Google Analytics', function() {
               { product_id: '507f1f77bcf86cd799439011' }
             ]
           });
-          analytics.assert(window.ga.args.length === 5);
+          analytics.assert(window.ga.args.length === 4);
           analytics.deepEqual(toArray(window.ga.args[1]), ['set', '&cu', 'USD']);
           analytics.deepEqual(toArray(window.ga.args[2]), ['ec:addImpression', {
             id: '507f1f77bcf86cd799439011',
@@ -910,8 +910,7 @@ describe('Google Analytics', function() {
             list: '1234',
             position: 1
           }]);
-          analytics.deepEqual(toArray(window.ga.args[3]), ['send', 'pageview']);
-          analytics.deepEqual(toArray(window.ga.args[4]), ['send', 'event', 'cat 1', 'Product List Viewed', { nonInteraction: 1 }]);
+          analytics.deepEqual(toArray(window.ga.args[3]), ['send', 'event', 'cat 1', 'Product List Viewed', { nonInteraction: 1 }]);
         });
 
         it('should send product impression data via product list filtered', function() {
@@ -935,7 +934,7 @@ describe('Google Analytics', function() {
               { product_id: '507f1f77bcf86cd799439011' }
             ]
           });
-          analytics.assert(window.ga.args.length === 5);
+          analytics.assert(window.ga.args.length === 4);
           analytics.deepEqual(toArray(window.ga.args[1]), ['set', '&cu', 'USD']);
           analytics.deepEqual(toArray(window.ga.args[2]), ['ec:addImpression', {
             id: '507f1f77bcf86cd799439011',
@@ -944,8 +943,8 @@ describe('Google Analytics', function() {
             position: 1,
             variant: 'department:beauty,price:under::price:desc'
           }]);
-          analytics.deepEqual(toArray(window.ga.args[3]), ['send', 'pageview']);
-          analytics.deepEqual(toArray(window.ga.args[4]), ['send', 'event', 'cat 1', 'Product List Filtered', { nonInteraction: 1 }]);
+          console.log(window.ga.args[3]);
+          analytics.deepEqual(toArray(window.ga.args[3]), ['send', 'event', 'cat 1', 'Product List Filtered', { nonInteraction: 1 }]);
         });
 
         it('should send product clicked data', function() {
