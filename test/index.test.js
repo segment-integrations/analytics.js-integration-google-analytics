@@ -1373,6 +1373,89 @@ describe('Google Analytics', function() {
           }]);
           analytics.deepEqual(toArray(window.ga.args[5]), ['send', 'event', 'EnhancedEcommerce', 'order refunded', { nonInteraction: 1 }]);
         });
+
+        it('should map custom dimensions and metrics in completed order', function() {
+          ga.options.metrics = { score: 'metric1' };
+          ga.options.dimensions = { author: 'dimension1', postType: 'dimension2' };
+
+          analytics.track('Completed Order', {
+              orderId: 'af5ccd73',
+              total: 99.99,
+              shipping: 13.99,
+              tax: 20.99,
+              products: [{
+                quantity: 1,
+                price: 24.75,
+                name: 'my product',
+                sku: 'p-298',
+                score: 'hello',
+                author: 'han',
+                category: 'games'
+              }, {
+                quantity: 3,
+                price: 24.75,
+                name: 'other product',
+                sku: 'p-299',
+                postType: 'teemo'
+              }]
+          });
+
+          analytics.assert(window.ga.args.length === 6);
+          analytics.deepEqual(window.ga.args[2], ['ec:addProduct', {
+            id: 'p-298',
+            name: 'my product',
+            category: 'games',
+            quantity: 1,
+            price: 24.75,
+            currency: 'USD',
+            dimension1: 'han',
+            metric1: 'hello',
+            brand: undefined,
+            variant: undefined
+          }]);
+          analytics.deepEqual(window.ga.args[3], ['ec:addProduct', {
+            id: 'p-299',
+            name: 'other product',
+            quantity: 3,
+            price: 24.75,
+            brand: undefined,
+            variant: undefined,
+            category: undefined,
+            currency: 'USD',
+            dimension2: 'teemo'
+          }]);
+        });
+
+        it('should map custom dimensions and metrics in completed order', function() {
+          ga.options.metrics = { score: 'metric1' };
+          ga.options.dimensions = { author: 'dimension1', postType: 'dimension2' };
+
+          analytics.track('added product', {
+            currency: 'CAD',
+            quantity: 1,
+            price: 24.75,
+            name: 'my product',
+            category: 'cat 1',
+            sku: 'p-298',
+            score: 9000,
+            author: 'han'
+          });
+
+          analytics.assert(window.ga.args.length === 5);
+          analytics.deepEqual(window.ga.args[1], ['set', '&cu', 'CAD']);
+          analytics.deepEqual(window.ga.args[2], ['ec:addProduct', {
+            id: 'p-298',
+            name: 'my product',
+            category: 'cat 1',
+            quantity: 1,
+            price: 24.75,
+            brand: undefined,
+            variant: undefined,
+            currency: 'CAD',
+            metric1: 9000,
+            dimension1: 'han'
+          }]);
+        });
       });
     });
   });
