@@ -1,3 +1,8 @@
+2.5.1 / 2017-05-05
+==================
+
+  * Remove excess pageview from addImpression-bound events
+
 2.5.0 / 2017-04-27
 ==================
 
