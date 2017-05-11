@@ -1,3 +1,8 @@
+2.6.0 / 2017-05-10
+==================
+
+  * Sets id, when present, as a custom dimension on ga tracker object out of the box
+
 2.5.1 / 2017-05-05
 ==================
 
@@ -22,7 +27,7 @@
 2.3.0 / 2016-12-08
 ==================
 
-  * Add Support for Optimize 
+  * Add Support for Optimize
 
 2.2.0 / 2016-09-06
 ==================
