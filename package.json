@@ -1,5 +1,5 @@
 {
-  "name": "@segment/analytics.js-integration-google-analytics",
+  "name": "@astronomerio/analytics.js-integration-google-analytics",
   "description": "The Google Analytics analytics.js integration.",
   "version": "2.6.0",
   "keywords": [
@@ -14,14 +14,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/segment-integrations/analytics.js-integration-google-analytics.git"
+    "url": "git+https://github.com/astronomer-integrations/analytics.js-integration-google-analytics.git"
   },
-  "author": "Segment <friends@segment.com>",
+  "author": "Astronomer <info@astronomer.io>",
   "license": "SEE LICENSE IN LICENSE",
   "bugs": {
-    "url": "https://github.com/segment-integrations/analytics.js-integration-google-analytics/issues"
+    "url": "https://github.com/astronomer-integrations/analytics.js-integration-google-analytics/issues"
   },
-  "homepage": "https://github.com/segment-integrations/analytics.js-integration-google-analytics#readme",
+  "homepage": "https://github.com/astronomer-integrations/analytics.js-integration-google-analytics#readme",
   "dependencies": {
     "@ndhoule/defaults": "^2.0.1",
     "@segment/analytics.js-integration": "^3.1.0",
