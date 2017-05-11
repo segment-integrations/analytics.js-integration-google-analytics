@@ -887,7 +887,6 @@ describe('Google Analytics', function() {
             sku: 'p-298',
             list: 'Apparel Gallery'
           });
-
           analytics.assert(window.ga.args.length === 5);
           analytics.deepEqual(toArray(window.ga.args[1]), ['set', '&cu', 'CAD']);
           analytics.deepEqual(toArray(window.ga.args[2]), ['ec:addProduct', {
@@ -983,6 +982,53 @@ describe('Google Analytics', function() {
           }]);
           analytics.deepEqual(toArray(window.ga.args[3]), ['ec:setAction', 'click', { list: 'search results' }]);
           analytics.deepEqual(toArray(window.ga.args[4]), ['send', 'event', 'cat 1', 'product clicked', { nonInteraction: 1 }]);
+        });
+
+        it('should send product list viewed data', function() {
+          analytics.track('Product List Viewed', {
+            category: 'cat 1',
+            list_id: '1234',
+            products: [
+            { product_id: '507f1f77bcf86cd799439011' }
+            ]
+          });
+          analytics.assert(window.ga.args.length === 5);
+          analytics.deepEqual(toArray(window.ga.args[1]), ['set', '&cu', 'USD']);
+          analytics.deepEqual(toArray(window.ga.args[2]), ['ec:addImpression', {
+            id: '507f1f77bcf86cd799439011',
+            category: 'cat 1',
+            list: '1234',
+            position: 0
+          }]);
+          analytics.deepEqual(toArray(window.ga.args[3]), ['send', 'pageview']);
+          analytics.deepEqual(toArray(window.ga.args[4]), ['send', 'event', 'cat 1', 'Product List Viewed', { nonInteraction: 1 }]);
+        });
+
+        it('should send product list filtered data', function() {
+          analytics.track('Product List Filtered', {
+            category: 'cat 1',
+            list_id: '1234',
+            filters: [    {
+              type: 'department',
+              value: 'beauty'
+            },
+            {
+              type: 'price',
+              value: 'under'
+            }],
+            sorts:[ {
+              type: 'price',
+              value: 'desc'
+            }],
+            products: [
+            { product_id: '507f1f77bcf86cd799439011' }
+            ]
+          });
+          analytics.assert(window.ga.args.length === 5);
+          analytics.deepEqual(toArray(window.ga.args[1]), ['set', '&cu', 'USD']);
+          analytics.deepEqual(toArray(window.ga.args[2]),['ec:addImpression', { id: '507f1f77bcf86cd799439011', category: 'cat 1', variant: 'department:beauty,price:underprice:desc', list: '1234', position: 0 }]);
+          analytics.deepEqual(toArray(window.ga.args[3]), ['send', 'pageview']);
+          analytics.deepEqual(toArray(window.ga.args[4]), ['send', 'event', 'cat 1', 'Product List Filtered', { nonInteraction: 1 }]);
         });
 
         it('should send promotion viewed data', function() {
