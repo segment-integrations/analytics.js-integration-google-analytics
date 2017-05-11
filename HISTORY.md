@@ -1,4 +1,4 @@
-2.6.1 / 2017-05-10
+2.6.0 / 2017-05-10
 ==================
 
   * Sets id, when present, as a custom dimension on ga tracker object out of the box
