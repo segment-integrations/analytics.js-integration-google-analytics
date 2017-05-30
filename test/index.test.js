@@ -43,6 +43,7 @@ describe('Google Analytics', function() {
       .option('enhancedLinkAttribution', false)
       .option('ignoredReferrers', null)
       .option('includeSearch', false)
+      .option('metricAndDimensionSettings', { setAllMappedProps: true, events: [] })
       .option('metrics', {})
       .option('nonInteraction', false)
       .option('sendUserId', false)
@@ -615,13 +616,54 @@ describe('Google Analytics', function() {
           });
         });
 
-        it('should map custom dimensions & metrics using track.properties()', function() {
+        it('should map custom dimensions & metrics using track.properties() if trackAllEvents is true', function() {
+          ga.options.metricAndDimensionSettings = { setAllMappedProps: true, events: [] };
           ga.options.metrics = { loadTime: 'metric1', levelAchieved: 'metric2' };
           ga.options.dimensions = { referrer: 'dimension2' };
           analytics.track('Level Unlocked', { loadTime: '100', levelAchieved: '5', referrer: 'Google' });
 
           analytics.called(window.ga, 'set', {
             metric1: '100',
+            metric2: '5',
+            dimension2: 'Google'
+          });
+        });
+
+        it('should not map custom dimensions & metrics for unspecified events if trackAllEvents is false', function() {
+          ga.options.metricAndDimensionSettings = { trackAllEvents: false, events: ['Foobar'] };
+          ga.options.metrics = { loadTime: 'metric1', levelAchieved: 'metric2' };
+          ga.options.dimensions = { referrer: 'dimension2' };
+          analytics.track('Level Unlocked', { loadTime: '100', levelAchieved: '5', referrer: 'Google' });
+
+          analytics.didNotCall(window.ga, 'set', {
+            metric1: '100',
+            metric2: '5',
+            dimension2: 'Google'
+          });
+        });
+
+        it('should map custom dimensions & metrics from integration specific object for specified events if trackAllEvents is false', function() {
+          ga.options.metricAndDimensionSettings = { trackAllEvents: false, events: [] };
+          ga.options.metrics = { loadTime: 'metric1', levelAchieved: 'metric2' };
+          ga.options.dimensions = { referrer: 'dimension2' };
+          analytics.track('Level Unlocked', { loadTime: '100', levelAchieved: '5', referrer: 'Google' }, {
+            integrations: {
+              'Google Analytics': {
+                propsToSet: ['loadTime']
+              }
+            }
+          });
+
+          analytics.called(window.ga, 'set', {
+            metric1: '100'
+          });
+
+          analytics.called(window.ga, 'send', 'event', {
+            eventCategory: 'All',
+            eventAction: 'Level Unlocked',
+            eventLabel: undefined,
+            eventValue: 0,
+            nonInteraction: false,
             metric2: '5',
             dimension2: 'Google'
           });
