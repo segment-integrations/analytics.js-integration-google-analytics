@@ -43,7 +43,7 @@ describe('Google Analytics', function() {
       .option('enhancedLinkAttribution', false)
       .option('ignoredReferrers', null)
       .option('includeSearch', false)
-      .option('metricAndDimensionSettings', { setAllMappedProps: true, events: [] })
+      .option('setAllMappedProps', true)
       .option('metrics', {})
       .option('nonInteraction', false)
       .option('sendUserId', false)
@@ -616,8 +616,8 @@ describe('Google Analytics', function() {
           });
         });
 
-        it('should map custom dimensions & metrics using track.properties() if trackAllEvents is true', function() {
-          ga.options.metricAndDimensionSettings = { setAllMappedProps: true, events: [] };
+        it('should map and set custom dimensions & metrics using track.properties() if setAllMappedProps is true', function() {
+          ga.options.setAllMappedProps = true;
           ga.options.metrics = { loadTime: 'metric1', levelAchieved: 'metric2' };
           ga.options.dimensions = { referrer: 'dimension2' };
           analytics.track('Level Unlocked', { loadTime: '100', levelAchieved: '5', referrer: 'Google' });
@@ -629,8 +629,8 @@ describe('Google Analytics', function() {
           });
         });
 
-        it('should not map custom dimensions & metrics for unspecified events if trackAllEvents is false', function() {
-          ga.options.metricAndDimensionSettings = { trackAllEvents: false, events: ['Foobar'] };
+        it('should send but not set custom dimensions & metrics if setAllMappedProps is false', function() {
+          ga.options.setAllMappedProps = false;
           ga.options.metrics = { loadTime: 'metric1', levelAchieved: 'metric2' };
           ga.options.dimensions = { referrer: 'dimension2' };
           analytics.track('Level Unlocked', { loadTime: '100', levelAchieved: '5', referrer: 'Google' });
@@ -640,23 +640,6 @@ describe('Google Analytics', function() {
             metric2: '5',
             dimension2: 'Google'
           });
-        });
-
-        it('should map custom dimensions & metrics from integration specific object for specified events if trackAllEvents is false', function() {
-          ga.options.metricAndDimensionSettings = { trackAllEvents: false, events: [] };
-          ga.options.metrics = { loadTime: 'metric1', levelAchieved: 'metric2' };
-          ga.options.dimensions = { referrer: 'dimension2' };
-          analytics.track('Level Unlocked', { loadTime: '100', levelAchieved: '5', referrer: 'Google' }, {
-            integrations: {
-              'Google Analytics': {
-                propsToSet: ['loadTime']
-              }
-            }
-          });
-
-          analytics.called(window.ga, 'set', {
-            metric1: '100'
-          });
 
           analytics.called(window.ga, 'send', 'event', {
             eventCategory: 'All',
@@ -664,6 +647,7 @@ describe('Google Analytics', function() {
             eventLabel: undefined,
             eventValue: 0,
             nonInteraction: false,
+            metric1: '100',
             metric2: '5',
             dimension2: 'Google'
           });
