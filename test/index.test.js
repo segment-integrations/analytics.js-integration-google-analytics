@@ -310,7 +310,7 @@ describe('Google Analytics', function() {
           });
         });
 
-        it('should map custom dimensions, metrics & content groupings using track.properties()', function() {
+        it('should map and set custom dimensions, metrics & content groupings using page.properties()', function() {
           ga.options.metrics = { score: 'metric1' };
           ga.options.dimensions = { author: 'dimension1', postType: 'dimension2' };
           ga.options.contentGroupings = { section: 'contentGrouping1' };
