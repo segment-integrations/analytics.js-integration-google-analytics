@@ -1,3 +1,8 @@
+2.7.0 / 2017-05-31
+==================
+
+  * Add an interface option to stop the integration from setting custom metrics/dimensions to the global GA tracker object
+
 2.6.0 / 2017-05-10
 ==================
 
