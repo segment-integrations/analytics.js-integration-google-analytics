@@ -277,6 +277,28 @@ describe('Google Analytics', function() {
           });
         });
 
+        it('should not set custom dimensions/metrics if settings.setAllMappedProps is false', function() {
+          ga.options.setAllMappedProps = false;
+          ga.options.metrics = { loadTime: 'metric1', levelAchieved: 'metric2' };
+          ga.options.dimensions = { company: 'dimension2' };
+          analytics.page('Page Viewed', { loadTime: '100', levelAchieved: '5', company: 'Google' });
+          
+          analytics.didNotCall(window.ga, 'set', {
+            metric1: '100',
+            metric2: '5',
+            dimension2: 'Google'
+          });
+          
+          analytics.called(window.ga, 'send', 'pageview', {
+            page: window.location.pathname,
+            title: 'Page Viewed',
+            location: window.location.protocol + '//' + window.location.hostname + (window.location.port ? ':' + window.location.port : '') + window.location.pathname + window.location.search,
+            metric1: '100',
+            metric2: '5',
+            dimension2: 'Google'
+          });
+        });
+
         it('should send the query if its included', function() {
           ga.options.includeSearch = true;
           analytics.page('category', 'name', { url: 'url', path: '/path', search: '?q=1' });

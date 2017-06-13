@@ -1,3 +1,8 @@
+2.8.0 / 2017-06-13
+==================
+
+  * Extend previous change to apply for custom properties of `page` events.
+
 2.7.0 / 2017-05-31
 ==================
 
