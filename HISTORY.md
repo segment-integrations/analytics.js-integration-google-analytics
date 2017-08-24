@@ -1,3 +1,8 @@
+2.9.0 / 2017-24-08
+==================
+
+  * Use custom name for tracker rather than default unnamed
+
 2.8.0 / 2017-06-13
 ==================
 
