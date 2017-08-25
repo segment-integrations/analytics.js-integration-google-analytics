@@ -126,7 +126,7 @@ describe('Google Analytics', function() {
           if (window.location.hostname !== 'localhost') expectedOpts.cookieDomain = 'auto';
           analytics.initialize();
           analytics.page();
-          analytics.deepEqual(toArray(window.ga.q[0]), ['create', settings.trackingId, expectedOpts, undefined]);
+          analytics.deepEqual(toArray(window.ga.q[0]), ['create', settings.trackingId, expectedOpts]);
         });
 
         it('should name ga tracker if opted in', function() {
