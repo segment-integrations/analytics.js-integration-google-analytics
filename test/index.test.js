@@ -52,6 +52,7 @@ describe('Google Analytics', function() {
       .option('trackNamedPages', true)
       .option('trackingId', '')
       .option('optimize', '')
+      .option('nameTracker', false)
       .option('sampleRate', 100));
   });
 
@@ -125,7 +126,20 @@ describe('Google Analytics', function() {
           if (window.location.hostname !== 'localhost') expectedOpts.cookieDomain = 'auto';
           analytics.initialize();
           analytics.page();
-          analytics.deepEqual(toArray(window.ga.q[0]), ['create', settings.trackingId, expectedOpts, 'segmentTrackerGA']);
+          analytics.deepEqual(toArray(window.ga.q[0]), ['create', settings.trackingId, expectedOpts]);
+        });
+
+        it('should name ga tracker if opted in', function() {
+          var expectedOpts = {
+            cookieDomain: 'none',
+            siteSpeedSampleRate: settings.siteSpeedSampleRate,
+            sampleRate: settings.sampleRate,
+            allowLinker: true
+          };
+          ga.options.nameTracker = true;
+          analytics.initialize();
+          analytics.page();
+          analytics.deepEqual(toArray(window.ga.q[0]), ['create', settings.trackingId, expectedOpts, 'segmentGATracker']);
         });
 
         it('should call window.ga.require for optimize if enabled', function() {
@@ -282,13 +296,11 @@ describe('Google Analytics', function() {
           ga.options.metrics = { loadTime: 'metric1', levelAchieved: 'metric2' };
           ga.options.dimensions = { company: 'dimension2' };
           analytics.page('Page Viewed', { loadTime: '100', levelAchieved: '5', company: 'Google' });
-          
           analytics.didNotCall(window.ga, 'set', {
             metric1: '100',
             metric2: '5',
             dimension2: 'Google'
           });
-          
           analytics.called(window.ga, 'send', 'pageview', {
             page: window.location.pathname,
             title: 'Page Viewed',
