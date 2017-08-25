@@ -52,7 +52,6 @@ describe('Google Analytics', function() {
       .option('trackNamedPages', true)
       .option('trackingId', '')
       .option('optimize', '')
-      .option('nameTracker', false)
       .option('sampleRate', 100));
   });
 
@@ -127,19 +126,6 @@ describe('Google Analytics', function() {
           analytics.initialize();
           analytics.page();
           analytics.deepEqual(toArray(window.ga.q[0]), ['create', settings.trackingId, expectedOpts]);
-        });
-
-        it('should name ga tracker if opted in', function() {
-          var expectedOpts = {
-            cookieDomain: 'none',
-            siteSpeedSampleRate: settings.siteSpeedSampleRate,
-            sampleRate: settings.sampleRate,
-            allowLinker: true
-          };
-          ga.options.nameTracker = true;
-          analytics.initialize();
-          analytics.page();
-          analytics.deepEqual(toArray(window.ga.q[0]), ['create', settings.trackingId, expectedOpts, 'segmentGATracker']);
         });
 
         it('should call window.ga.require for optimize if enabled', function() {
