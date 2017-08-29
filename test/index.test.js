@@ -867,7 +867,7 @@ describe('Google Analytics', function() {
             category: 'cat 1',
             sku: 'p-298'
           });
-
+          
           analytics.assert(window.ga.args.length === 5);
           analytics.deepEqual(toArray(window.ga.args[1]), ['set', '&cu', 'CAD']);
           analytics.deepEqual(toArray(window.ga.args[2]), ['ec:addProduct', {
