@@ -52,6 +52,7 @@ describe('Google Analytics', function() {
       .option('trackNamedPages', true)
       .option('trackingId', '')
       .option('optimize', '')
+      .option('nameTracker', false)
       .option('sampleRate', 100));
   });
 
@@ -126,6 +127,19 @@ describe('Google Analytics', function() {
           analytics.initialize();
           analytics.page();
           analytics.deepEqual(toArray(window.ga.q[0]), ['create', settings.trackingId, expectedOpts]);
+        });
+
+        it('should name ga tracker if opted in', function() {
+          var expectedOpts = {
+            cookieDomain: 'none',
+            siteSpeedSampleRate: settings.siteSpeedSampleRate,
+            sampleRate: settings.sampleRate,
+            allowLinker: true
+          };
+          ga.options.nameTracker = true;
+          analytics.initialize();
+          analytics.page();
+          analytics.deepEqual(toArray(window.ga.q[0]), ['create', settings.trackingId, expectedOpts, 'segmentGATracker']);
         });
 
         it('should call window.ga.require for optimize if enabled', function() {
@@ -853,7 +867,7 @@ describe('Google Analytics', function() {
             category: 'cat 1',
             sku: 'p-298'
           });
-
+          
           analytics.assert(window.ga.args.length === 5);
           analytics.deepEqual(toArray(window.ga.args[1]), ['set', '&cu', 'CAD']);
           analytics.deepEqual(toArray(window.ga.args[2]), ['ec:addProduct', {
