@@ -134,12 +134,13 @@ describe('Google Analytics', function() {
             cookieDomain: 'none',
             siteSpeedSampleRate: settings.siteSpeedSampleRate,
             sampleRate: settings.sampleRate,
-            allowLinker: true
+            allowLinker: true,
+            name: 'segmentGATracker'
           };
           ga.options.nameTracker = true;
           analytics.initialize();
           analytics.page();
-          analytics.deepEqual(toArray(window.ga.q[0]), ['create', settings.trackingId, expectedOpts, 'segmentGATracker']);
+          analytics.deepEqual(toArray(window.ga.q[0]), ['create', settings.trackingId, expectedOpts]);
         });
 
         it('should call window.ga.require for optimize if enabled', function() {
