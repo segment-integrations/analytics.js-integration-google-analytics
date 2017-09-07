@@ -32,22 +32,11 @@ var customLaunchers = {
     browserName: 'safari',
     version: '9.0'
   },
-  // FIXME(ndhoule): Bad IE7/8 support in testing packages make these fail
-  // sl_ie_7: {
-  //   base: 'SauceLabs',
-  //   browserName: 'internet explorer',
-  //   version: '7'
-  // },
-  // sl_ie_8: {
-  //   base: 'SauceLabs',
-  //   browserName: 'internet explorer',
-  //   version: '8'
-  // },
-  // sl_ie_9: {
-  //   base: 'SauceLabs',
-  //   browserName: 'internet explorer',
-  //   version: '9'
-  // },
+  sl_ie_9: {
+    base: 'SauceLabs',
+    browserName: 'internet explorer',
+    version: '9'
+  },
   sl_ie_10: {
     base: 'SauceLabs',
     browserName: 'internet explorer',
@@ -57,12 +46,11 @@ var customLaunchers = {
     base: 'SauceLabs',
     browserName: 'internet explorer',
     version: '11'
+  },
+  sl_edge_latest: {
+    base: 'SauceLabs',
+    browserName: 'microsoftedge'
   }
-  // FIXME(peripheral1994): New builds have caused Edge14 and IE9 to fail incorrectly.
-  // sl_edge_latest: {
-  //   base: 'SauceLabs',
-  //   browserName: 'microsoftedge'
-  // }
 };
 
 module.exports = function(config) {
@@ -74,6 +62,14 @@ module.exports = function(config) {
 
   config.set({
     browserDisconnectTolerance: 1,
+
+    /**
+     * We add the Disconnect and Activity timeouts here to help IE9 and Edge. With this many tests, they end up 
+     * taking a long time to complete. This lets them run over all of their tests.
+     */
+    browserDisconnectTimeout: 60000,
+
+    browserNoActivityTimeout: 60000,
 
     singleRun: true,
 
