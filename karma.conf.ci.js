@@ -63,6 +63,10 @@ module.exports = function(config) {
   config.set({
     browserDisconnectTolerance: 1,
 
+    /**
+     * We add the Disconnect and Activity timeouts here to help IE9 and Edge. With this many tests, they end up 
+     * taking a long time to complete. This lets them run over all of their tests.
+    /**
     browserDisconnectTimeout: 60000,
 
     browserNoActivityTimeout: 60000,
