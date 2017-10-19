@@ -164,9 +164,13 @@ describe('Google Analytics', function() {
         });
 
         it('should anonymize the ip', function() {
+          var expectedOptions = {
+            anonymizeIp: true,
+            userId: false
+          };
           analytics.initialize();
           analytics.page();
-          analytics.assert(spy.calledWith('set', 'anonymizeIp', true));
+          analytics.assert(spy.calledWith('set', expectedOptions));
         });
 
         it('should call #load', function() {
@@ -176,18 +180,28 @@ describe('Google Analytics', function() {
         });
 
         it('should not send universal user id by default', function() {
-          analytics.user().id('baz');
+          var userId = 'baz';
+          var unexpectedOptions = {
+            anonymizeIp: true,
+            userId: userId
+          };
+          analytics.user().id(userId);
           analytics.initialize();
           analytics.page();
-          analytics.assert(spy.withArgs('set', 'userId', 'baz').notCalled);
+          analytics.assert(spy.withArgs('set', unexpectedOptions).notCalled);
         });
 
         it('should send universal user id if sendUserId option is true and user.id() is truthy', function() {
+          var userId = 'baz';
+          var expectedOptions = {
+            anonymizeIp: true,
+            userId: userId
+          };
           analytics.user().id('baz');
           ga.options.sendUserId = true;
           analytics.initialize();
           analytics.page();
-          analytics.assert(spy.calledWith('set', 'userId', 'baz'));
+          analytics.assert(spy.calledWith('set', expectedOptions));
         });
 
         it('should map custom dimensions & metrics using user.traits()', function() {
@@ -336,7 +350,7 @@ describe('Google Analytics', function() {
           });
         });
 
-        it('should send the campaign info if its included', function() {
+        it('should set the campaign info if its included', function() {
           ga.options.includeSearch = true;
           analytics.page('category', 'name', { url: 'url', path: '/path', search: '?q=1' }, {
             campaign: {
@@ -347,10 +361,7 @@ describe('Google Analytics', function() {
               content: 'test'
             }
           });
-          analytics.called(window.ga, 'send', 'pageview', {
-            page: '/path?q=1',
-            title: 'category name',
-            location: 'url',
+          analytics.called(window.ga, 'set', {
             campaignName: 'test',
             campaignSource: 'test',
             campaignMedium: 'test',
@@ -415,6 +426,20 @@ describe('Google Analytics', function() {
             eventLabel: undefined,
             eventValue: 0,
             nonInteraction: true,
+          });
+        });
+
+        it('should set campaign params on a track event', function() {
+          analytics.page('Name', {}, {
+            campaign: {
+              name: 'test',
+              source: 'test',
+              medium: 'test',
+              term: 'test',
+              content: 'test'
+            }
+          });
+          analytics.called(window.ga, 'set', {
             campaignName: 'test',
             campaignSource: 'test',
             campaignMedium: 'test',
@@ -446,23 +471,18 @@ describe('Google Analytics', function() {
         });
 
         it('should not track a named or categorized page when the option is off', function() {
+          var spy = sinon.spy(ga, 'track')
           ga.options.trackNamedPages = false;
           ga.options.trackCategorizedPages = false;
           analytics.page('Name');
           analytics.page('Category', 'Name');
-          // send should only be sent twice, for pageviews, not events
-          analytics.assert(window.ga.args.length === 4);
-          analytics.assert(window.ga.args[0][0] === 'set');
-          analytics.assert(window.ga.args[1][0] === 'send');
-          analytics.assert(window.ga.args[2][0] === 'set');
-          analytics.assert(window.ga.args[3][0] === 'send');
+          analytics.assert(spy.withArgs('Name').notCalled)
+          analytics.assert(spy.withArgs('Category').notCalled)
         });
 
         it('should override referrer when manually set', function() {
           analytics.page({ referrer: 'http://lifeofpablo.com' });
           analytics.called(window.ga, 'set', {
-            page: window.location.pathname,
-            title: document.title,
             referrer: 'http://lifeofpablo.com'
           });
         });
@@ -543,11 +563,6 @@ describe('Google Analytics', function() {
             eventLabel: undefined,
             eventValue: 0,
             nonInteraction: false,
-            campaignName: 'test',
-            campaignSource: 'test',
-            campaignMedium: 'test',
-            campaignKeyword: 'test',
-            campaignContent: 'test'
           });
         });
 
@@ -750,14 +765,12 @@ describe('Google Analytics', function() {
             id: '780bc55',
             revenue: 99.99,
             shipping: 13.99,
-            affiliation: undefined,
             tax: 20.99,
             currency: 'USD'
           }]);
 
           analytics.deepEqual(window.ga.args[2], ['ecommerce:addItem', {
             id: '780bc55',
-            category: undefined,
             name: 'my product',
             price: 24.75,
             quantity: 1,
@@ -767,7 +780,6 @@ describe('Google Analytics', function() {
 
           analytics.deepEqual(window.ga.args[3], ['ecommerce:addItem', {
             id: '780bc55',
-            category: undefined,
             name: 'other product',
             price: 24.75,
             sku: 'p-299',
@@ -791,7 +803,6 @@ describe('Google Analytics', function() {
             id: '5d4c7cb5',
             revenue: 99.9,
             shipping: 13.99,
-            affiliation: undefined,
             tax: 20.99,
             currency: 'USD'
           }]);
@@ -811,7 +822,6 @@ describe('Google Analytics', function() {
             id: '5d4c7cb5',
             revenue: 99.9,
             shipping: 13.99,
-            affiliation: undefined,
             tax: 20.99,
             currency: 'EUR'
           }]);
