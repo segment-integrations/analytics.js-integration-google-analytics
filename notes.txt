@@ -1,0 +1,59 @@
+Measuring Impressions:
+
+  ImpressionObject:
+
+  Key	    Value Type Required	Description
+  id	      text	    Yes*	  The product ID or SKU (e.g. P67890). *Either this field or name must be set.
+  name	    text	    Yes*	  The name of the product (e.g. Android T-Shirt). *Either this field or id must be set.
+  list	    text	    No	    The list or collection to which the product belongs (e.g. Search Results)
+  brand	    text	    No	    The brand associated with the product (e.g. Google).
+  category	text	    No	    The category to which the product belongs (e.g. Apparel). Use / as a delimiter to specify up to 5-levels of hierarchy (e.g. Apparel/Men/T-Shirts).
+  variant	  text	    No	    The variant of the product (e.g. Black).
+  position	integer	  No	    The product's position in a list or collection (e.g. 2).
+  price	    currency	No	    The price of a product (e.g. 29.20).
+
+
+  ga('ec:addImpression', {            // Provide product details in an impressionFieldObject.
+    'id': 'P12345',                   // Product ID (string).
+    'name': 'Android Warhol T-Shirt', // Product name (string).
+    'category': 'Apparel/T-Shirts',   // Product category (string).
+    'brand': 'Google',                // Product brand (string).
+    'variant': 'Black',               // Product variant (string).
+    'list': 'Search Results',         // Product list (string).
+    'position': 1,                    // Product position (number).
+    'dimension1': 'Member'            // Custom dimension (string).
+  });
+
+
+  Supported Methods:
+  productListViewed
+  productListFiltered
+
+Measuring Actions:
+
+  productFieldObject: https://developers.google.com/analytics/devguides/collection/analyticsjs/enhanced-ecommerce#product-data
+
+  Key	      Type     Required	Description
+  id	      text	    Yes*	  The product ID or SKU (e.g. P67890). *Either this field or name must be set.
+  name	    text	    Yes*	  The name of the product (e.g. Android T-Shirt). *Either this field or id must be set.
+  brand	    text	    No	    The brand associated with the product (e.g. Google).
+  category	text	    No	    The category to which the product belongs (e.g. Apparel). Use / as a delimiter to specify up to 5-levels of hierarchy (e.g. Apparel/Men/T-Shirts).
+  variant	  text	    No	    The variant of the product (e.g. Black).
+  price	    currency	No	    The price of a product (e.g. 29.20).
+  quantity	integer	  No	    The quantity of a product (e.g. 2).
+  coupon	  text	    No	    The coupon code associated with a product (e.g. SUMMER_SALE13).
+  position	integer	  No	    The product's position in a list or collection (e.g. 2).
+
+  ga('ec:addProduct', {               // Provide product details in a productFieldObject.
+  'id': 'P12345',                   // Product ID (string).
+  'name': 'Android Warhol T-Shirt', // Product name (string).
+  'category': 'Apparel',            // Product category (string).
+  'brand': 'Google',                // Product brand (string).
+  'variant': 'Black',               // Product variant (string).
+  'position': 1,                    // Product position (number).
+  'dimension1': 'Member'            // Custom dimension (string).
+});
+
+ga('ec:setAction', 'click', {       // click action.
+  'list': 'Search Results'          // Product list (string).
+});
