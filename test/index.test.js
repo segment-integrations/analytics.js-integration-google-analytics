@@ -425,7 +425,7 @@ describe('Google Analytics', function() {
             eventAction: 'Viewed Name Page',
             eventLabel: undefined,
             eventValue: 0,
-            nonInteraction: true,
+            nonInteraction: true
           });
         });
 
@@ -471,13 +471,13 @@ describe('Google Analytics', function() {
         });
 
         it('should not track a named or categorized page when the option is off', function() {
-          var spy = sinon.spy(ga, 'track')
+          var spy = sinon.spy(ga, 'track');
           ga.options.trackNamedPages = false;
           ga.options.trackCategorizedPages = false;
           analytics.page('Name');
           analytics.page('Category', 'Name');
-          analytics.assert(spy.withArgs('Name').notCalled)
-          analytics.assert(spy.withArgs('Category').notCalled)
+          analytics.assert(spy.withArgs('Name').notCalled);
+          analytics.assert(spy.withArgs('Category').notCalled);
         });
 
         it('should override referrer when manually set', function() {
@@ -562,7 +562,7 @@ describe('Google Analytics', function() {
             eventAction: 'event',
             eventLabel: undefined,
             eventValue: 0,
-            nonInteraction: false,
+            nonInteraction: false
           });
         });
 
@@ -991,7 +991,6 @@ describe('Google Analytics', function() {
               { product_id: '507f1f77bcf86cd799439011' }
             ]
           });
-
           analytics.assert(window.ga.args.length === 4);
           analytics.deepEqual(toArray(window.ga.args[1]), ['set', '&cu', 'USD']);
           analytics.deepEqual(toArray(window.ga.args[2]), ['ec:addImpression', {
@@ -1191,7 +1190,6 @@ describe('Google Analytics', function() {
             currency: 'CAD',
             step: 2
           });
-
           analytics.assert(window.ga.args.length === 4);
           analytics.deepEqual(toArray(window.ga.args[1]), ['set', '&cu', 'CAD']);
           analytics.deepEqual(toArray(window.ga.args[2]), ['ec:setAction', 'checkout', {
