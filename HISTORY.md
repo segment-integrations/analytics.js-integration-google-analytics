@@ -1,3 +1,18 @@
+2.10.5 / 2017-10-25
+=================
+
+* Pulled out classic, universal, and enhanced-ecommerce support into their own files and required them into index.js
+
+* Removed some repetitive code by refactoring out into helper functions.
+
+* Added some improved commenting
+
+* Made our mapping logic a little more clear for anyone reading the code
+
+* Removed the need to reference our methods to methods with enhanced or classic appended to them.
+
+* Got rid of the behavior where we were passing undefined values as params to ga methods for easier testing.
+
 2.9.4 / 2017-08-31
 =================
 
