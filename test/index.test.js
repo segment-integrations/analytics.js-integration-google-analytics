@@ -5,11 +5,9 @@ var integration = require('@segment/analytics.js-integration');
 var sandbox = require('@segment/clear-env');
 var tester = require('@segment/analytics.js-integration-tester');
 var plugin = require('../lib/');
-var sinon = require('sinon');
 // GA saves arrays as argument objects and `assert.deepEquals` fails when comparing
 // argument objects against arrays!
 var toArray = require('to-array');
-var metrics = require('../lib/utils').metrics;
 
 describe('Google Analytics', function() {
   var GA = plugin.Integration;
@@ -82,29 +80,21 @@ describe('Google Analytics', function() {
       });
 
       describe('#initialize', function() {
-        var spy;
-
-        beforeEach(function() {
-          analytics.initialize();
-          spy = sinon.spy(window, 'ga');
-        });
-        
         it('should require \'displayfeatures\' if .doubleClick option is `true`', function() {
           ga.options.doubleClick = true;
           analytics.initialize();
           analytics.page();
-          analytics.assert(spy.calledWith('require', 'displayfeatures'));
+          analytics.deepEqual(toArray(window.ga.q[1]), ['require', 'displayfeatures']);
         });
 
         it('should require "linkid.js" if enhanced link attribution is `true`', function() {
           ga.options.enhancedLinkAttribution = true;
           analytics.initialize();
           analytics.page();
-          analytics.assert(spy.calledWith('require', 'linkid', 'linkid.js'));
+          analytics.deepEqual(toArray(window.ga.q[1]), ['require', 'linkid', 'linkid.js']);
         });
 
         it('should create window.GoogleAnalyticsObject', function() {
-          ga.reset();
           analytics.assert(!window.GoogleAnalyticsObject);
           analytics.initialize();
           analytics.page();
@@ -112,7 +102,6 @@ describe('Google Analytics', function() {
         });
 
         it('should create window.ga', function() {
-          ga.reset();
           analytics.assert(!window.ga);
           analytics.initialize();
           analytics.page();
@@ -120,7 +109,6 @@ describe('Google Analytics', function() {
         });
 
         it('should create window.ga.l', function() {
-          ga.reset();
           analytics.assert(!window.ga);
           analytics.initialize();
           analytics.page();
@@ -129,7 +117,6 @@ describe('Google Analytics', function() {
 
         it('should call window.ga.create with options', function() {
           var expectedOpts = {
-            name: '',
             cookieDomain: 'none',
             siteSpeedSampleRate: settings.siteSpeedSampleRate,
             sampleRate: settings.sampleRate,
@@ -139,7 +126,7 @@ describe('Google Analytics', function() {
           if (window.location.hostname !== 'localhost') expectedOpts.cookieDomain = 'auto';
           analytics.initialize();
           analytics.page();
-          analytics.assert(spy.calledWith('create', settings.trackingId, expectedOpts));
+          analytics.deepEqual(toArray(window.ga.q[0]), ['create', settings.trackingId, expectedOpts]);
         });
 
         it('should name ga tracker if opted in', function() {
@@ -153,24 +140,20 @@ describe('Google Analytics', function() {
           ga.options.nameTracker = true;
           analytics.initialize();
           analytics.page();
-          analytics.assert(spy.calledWith('create', settings.trackingId, expectedOpts));
+          analytics.deepEqual(toArray(window.ga.q[0]), ['create', settings.trackingId, expectedOpts]);
         });
 
         it('should call window.ga.require for optimize if enabled', function() {
           ga.options.optimize = 'GTM-XXXXX';
           analytics.initialize();
           analytics.page();
-          analytics.assert(spy.calledWith('require', 'GTM-XXXXX'));
+          analytics.deepEqual(toArray(window.ga.q[1]), ['require', 'GTM-XXXXX']);
         });
 
         it('should anonymize the ip', function() {
-          var expectedOptions = {
-            anonymizeIp: true,
-            userId: false
-          };
           analytics.initialize();
           analytics.page();
-          analytics.assert(spy.calledWith('set', expectedOptions));
+          analytics.deepEqual(toArray(window.ga.q[1]), ['set', 'anonymizeIp', true]);
         });
 
         it('should call #load', function() {
@@ -180,28 +163,18 @@ describe('Google Analytics', function() {
         });
 
         it('should not send universal user id by default', function() {
-          var userId = 'baz';
-          var unexpectedOptions = {
-            anonymizeIp: true,
-            userId: userId
-          };
-          analytics.user().id(userId);
+          analytics.user().id('baz');
           analytics.initialize();
           analytics.page();
-          analytics.assert(spy.withArgs('set', unexpectedOptions).notCalled);
+          analytics.notDeepEqual(toArray(window.ga.q[1]), ['set', 'userId', 'baz']);
         });
 
         it('should send universal user id if sendUserId option is true and user.id() is truthy', function() {
-          var userId = 'baz';
-          var expectedOptions = {
-            anonymizeIp: true,
-            userId: userId
-          };
           analytics.user().id('baz');
           ga.options.sendUserId = true;
           analytics.initialize();
           analytics.page();
-          analytics.assert(spy.calledWith('set', expectedOptions));
+          analytics.deepEqual(toArray(window.ga.q[1]), ['set', 'userId', 'baz']);
         });
 
         it('should map custom dimensions & metrics using user.traits()', function() {
@@ -210,23 +183,22 @@ describe('Google Analytics', function() {
           analytics.user().traits({ firstName: 'John', lastName: 'Doe', age: 20, foo: true, bar: false });
           analytics.initialize();
           analytics.page();
-          analytics.assert(spy.calledWith('set', {
+          analytics.deepEqual(toArray(window.ga.q[2]), ['set', {
             metric1: 'John',
             metric2: 'Doe',
             metric3: 'true',
             dimension2: 20,
             dimension3: 'false'
-          }));
+          }]);
         });
 
         it('should not set metrics, dimensions and content groupings if there are no traits', function() {
           ga.options.metrics = { metric1: 'something' };
           ga.options.dimensions = { dimension3: 'industry' };
           ga.options.contentGroupings = { contentGrouping1: 'foo' };
-          var custom = metrics(analytics.user().traits(), ga.options);
           analytics.initialize();
           analytics.page();
-          analytics.assert(spy.withArgs(custom).notCalled);
+          analytics.strictEqual(window.ga.q[2], undefined);
         });
 
         it('should set metrics and dimensions that have dots but arent nested', function() {
@@ -235,11 +207,11 @@ describe('Google Analytics', function() {
           analytics.user().traits({ 'name.first': 'John', 'name.last': 'Doe', age: 20 });
           analytics.initialize();
           analytics.page();
-          analytics.assert(spy.calledWith('set', {
+          analytics.deepEqual(toArray(window.ga.q[2]), ['set', {
             metric1: 'John',
             metric2: 'Doe',
             dimension2: 20
-          }));
+          }]);
         });
 
         it('should set metrics and dimensions that are nested, using dot notation', function() {
@@ -254,11 +226,11 @@ describe('Google Analytics', function() {
           });
           analytics.initialize();
           analytics.page();
-          analytics.assert(spy.calledWith('set', {
+          analytics.deepEqual(toArray(window.ga.q[2]), ['set', {
             metric1: 'John',
             metric2: 'Doe',
             dimension2: 20
-          }));
+          }]);
         });
       });
     });
@@ -350,7 +322,7 @@ describe('Google Analytics', function() {
           });
         });
 
-        it('should set the campaign info if its included', function() {
+        it('should send the campaign info if its included', function() {
           ga.options.includeSearch = true;
           analytics.page('category', 'name', { url: 'url', path: '/path', search: '?q=1' }, {
             campaign: {
@@ -361,7 +333,10 @@ describe('Google Analytics', function() {
               content: 'test'
             }
           });
-          analytics.called(window.ga, 'set', {
+          analytics.called(window.ga, 'send', 'pageview', {
+            page: '/path?q=1',
+            title: 'category name',
+            location: 'url',
             campaignName: 'test',
             campaignSource: 'test',
             campaignMedium: 'test',
@@ -425,21 +400,7 @@ describe('Google Analytics', function() {
             eventAction: 'Viewed Name Page',
             eventLabel: undefined,
             eventValue: 0,
-            nonInteraction: true
-          });
-        });
-
-        it('should set campaign params on a track event', function() {
-          analytics.page('Name', {}, {
-            campaign: {
-              name: 'test',
-              source: 'test',
-              medium: 'test',
-              term: 'test',
-              content: 'test'
-            }
-          });
-          analytics.called(window.ga, 'set', {
+            nonInteraction: true,
             campaignName: 'test',
             campaignSource: 'test',
             campaignMedium: 'test',
@@ -471,18 +432,23 @@ describe('Google Analytics', function() {
         });
 
         it('should not track a named or categorized page when the option is off', function() {
-          var spy = sinon.spy(ga, 'track');
           ga.options.trackNamedPages = false;
           ga.options.trackCategorizedPages = false;
           analytics.page('Name');
           analytics.page('Category', 'Name');
-          analytics.assert(spy.withArgs('Name').notCalled);
-          analytics.assert(spy.withArgs('Category').notCalled);
+          // send should only be sent twice, for pageviews, not events
+          analytics.assert(window.ga.args.length === 4);
+          analytics.assert(window.ga.args[0][0] === 'set');
+          analytics.assert(window.ga.args[1][0] === 'send');
+          analytics.assert(window.ga.args[2][0] === 'set');
+          analytics.assert(window.ga.args[3][0] === 'send');
         });
 
         it('should override referrer when manually set', function() {
           analytics.page({ referrer: 'http://lifeofpablo.com' });
           analytics.called(window.ga, 'set', {
+            page: window.location.pathname,
+            title: document.title,
             referrer: 'http://lifeofpablo.com'
           });
         });
@@ -562,7 +528,12 @@ describe('Google Analytics', function() {
             eventAction: 'event',
             eventLabel: undefined,
             eventValue: 0,
-            nonInteraction: false
+            nonInteraction: false,
+            campaignName: 'test',
+            campaignSource: 'test',
+            campaignMedium: 'test',
+            campaignKeyword: 'test',
+            campaignContent: 'test'
           });
         });
 
@@ -765,12 +736,14 @@ describe('Google Analytics', function() {
             id: '780bc55',
             revenue: 99.99,
             shipping: 13.99,
+            affiliation: undefined,
             tax: 20.99,
             currency: 'USD'
           }]);
 
           analytics.deepEqual(window.ga.args[2], ['ecommerce:addItem', {
             id: '780bc55',
+            category: undefined,
             name: 'my product',
             price: 24.75,
             quantity: 1,
@@ -780,6 +753,7 @@ describe('Google Analytics', function() {
 
           analytics.deepEqual(window.ga.args[3], ['ecommerce:addItem', {
             id: '780bc55',
+            category: undefined,
             name: 'other product',
             price: 24.75,
             sku: 'p-299',
@@ -803,6 +777,7 @@ describe('Google Analytics', function() {
             id: '5d4c7cb5',
             revenue: 99.9,
             shipping: 13.99,
+            affiliation: undefined,
             tax: 20.99,
             currency: 'USD'
           }]);
@@ -822,6 +797,7 @@ describe('Google Analytics', function() {
             id: '5d4c7cb5',
             revenue: 99.9,
             shipping: 13.99,
+            affiliation: undefined,
             tax: 20.99,
             currency: 'EUR'
           }]);
@@ -901,6 +877,8 @@ describe('Google Analytics', function() {
             category: 'cat 1',
             quantity: 1,
             price: 24.75,
+            brand: undefined,
+            variant: undefined,
             currency: 'CAD'
           }]);
           analytics.deepEqual(toArray(window.ga.args[3]), ['ec:setAction', 'add', {}]);
@@ -926,6 +904,8 @@ describe('Google Analytics', function() {
             category: 'cat 1',
             quantity: 1,
             price: 24.75,
+            brand: undefined,
+            variant: undefined,
             currency: 'CAD'
           }]);
           analytics.deepEqual(toArray(window.ga.args[3]), ['ec:setAction', 'add', {}]);
@@ -950,6 +930,8 @@ describe('Google Analytics', function() {
             category: 'cat 1',
             quantity: 1,
             price: 24.75,
+            brand: undefined,
+            variant: undefined,
             currency: 'CAD'
           }]);
           analytics.deepEqual(toArray(window.ga.args[3]), ['ec:setAction', 'remove', {}]);
@@ -975,6 +957,8 @@ describe('Google Analytics', function() {
             category: 'cat 1',
             quantity: 1,
             price: 24.75,
+            brand: undefined,
+            variant: undefined,
             currency: 'CAD'
           }]);
           analytics.deepEqual(toArray(window.ga.args[3]), ['ec:setAction', 'detail', { list: 'Apparel Gallery' }]);
@@ -1054,6 +1038,8 @@ describe('Google Analytics', function() {
             category: 'cat 1',
             quantity: 1,
             price: 24.75,
+            brand: undefined,
+            variant: undefined,
             currency: 'CAD'
           }]);
           analytics.deepEqual(toArray(window.ga.args[3]), ['ec:setAction', 'click', { list: 'search results' }]);
@@ -1068,7 +1054,7 @@ describe('Google Analytics', function() {
             creative: 'summer_banner2',
             position: 'banner_slot1'
           });
-          
+
           analytics.assert(window.ga.args.length === 4);
           analytics.deepEqual(toArray(window.ga.args[1]), ['set', '&cu', 'CAD']);
           analytics.deepEqual(toArray(window.ga.args[2]), ['ec:addPromo', {
@@ -1123,15 +1109,21 @@ describe('Google Analytics', function() {
           analytics.deepEqual(toArray(window.ga.args[2]), ['ec:addProduct', {
             id: 'p-298',
             name: 'my product',
+            category: undefined,
             quantity: 1,
             price: 24.75,
+            brand: undefined,
+            variant: undefined,
             currency: 'CAD'
           }]);
           analytics.deepEqual(toArray(window.ga.args[3]), ['ec:addProduct', {
             id: 'p-299',
             name: 'other product',
+            category: undefined,
             quantity: 3,
             price: 24.75,
+            brand: undefined,
+            variant: undefined,
             currency: 'CAD'
           }]);
           analytics.deepEqual(toArray(window.ga.args[4]), ['ec:setAction', 'checkout', {
@@ -1168,6 +1160,8 @@ describe('Google Analytics', function() {
             category: 'cat 1',
             quantity: 1,
             price: 24.75,
+            brand: undefined,
+            variant: undefined,
             currency: 'CAD'
           }]);
           analytics.deepEqual(toArray(window.ga.args[3]), ['ec:addProduct', {
@@ -1176,6 +1170,8 @@ describe('Google Analytics', function() {
             category: 'cat 2',
             quantity: 3,
             price: 24.75,
+            brand: undefined,
+            variant: undefined,
             currency: 'CAD'
           }]);
           analytics.deepEqual(toArray(window.ga.args[4]), ['ec:setAction', 'checkout', {
@@ -1190,10 +1186,12 @@ describe('Google Analytics', function() {
             currency: 'CAD',
             step: 2
           });
+
           analytics.assert(window.ga.args.length === 4);
           analytics.deepEqual(toArray(window.ga.args[1]), ['set', '&cu', 'CAD']);
           analytics.deepEqual(toArray(window.ga.args[2]), ['ec:setAction', 'checkout', {
-            step: 2
+            step: 2,
+            option: undefined
           }]);
           analytics.deepEqual(toArray(window.ga.args[3]), ['send', 'event', 'EnhancedEcommerce', 'checkout step viewed', { nonInteraction: 1 }]);
         });
@@ -1254,7 +1252,11 @@ describe('Google Analytics', function() {
           analytics.assert(window.ga.args.length === 4);
           analytics.deepEqual(toArray(window.ga.args[2]), ['ec:setAction', 'purchase', {
             id: '7306cc06',
-            revenue: 0.0
+            affiliation: undefined,
+            revenue: 0.0,
+            tax: undefined,
+            shipping: undefined,
+            coupon: undefined
           }]);
           analytics.deepEqual(toArray(window.ga.args[3]), ['send', 'event', 'EnhancedEcommerce', 'order completed', { nonInteraction: 1 }]);
         });
@@ -1283,6 +1285,7 @@ describe('Google Analytics', function() {
               currency: 'EUR'
             }]
           });
+
           analytics.assert(window.ga.args.length === 6);
           analytics.deepEqual(toArray(window.ga.args[1]), ['set', '&cu', 'CAD']);
           analytics.deepEqual(toArray(window.ga.args[2]), ['ec:addProduct', {
@@ -1291,6 +1294,8 @@ describe('Google Analytics', function() {
             category: 'cat 1',
             quantity: 1,
             price: 24.75,
+            brand: undefined,
+            variant: undefined,
             currency: 'CAD'
           }]);
           analytics.deepEqual(toArray(window.ga.args[3]), ['ec:addProduct', {
@@ -1299,6 +1304,8 @@ describe('Google Analytics', function() {
             category: 'cat 2',
             quantity: 3,
             price: 24.75,
+            brand: undefined,
+            variant: undefined,
             currency: 'EUR'
           }]);
           analytics.deepEqual(toArray(window.ga.args[4]), ['ec:setAction', 'purchase', {
@@ -1346,6 +1353,8 @@ describe('Google Analytics', function() {
             category: 'cat 1',
             quantity: 1,
             price: 24.75,
+            brand: undefined,
+            variant: undefined,
             currency: 'CAD',
             coupon: 'promo'
           }]);
@@ -1355,6 +1364,8 @@ describe('Google Analytics', function() {
             category: 'cat 2',
             quantity: 3,
             price: 24.75,
+            brand: undefined,
+            variant: undefined,
             currency: 'EUR'
           }]);
           analytics.deepEqual(toArray(window.ga.args[4]), ['ec:setAction', 'purchase', {
@@ -1379,9 +1390,11 @@ describe('Google Analytics', function() {
 
           analytics.deepEqual(toArray(window.ga.args[2]), ['ec:setAction', 'purchase', {
             id: '5d4c7cb5',
+            affiliation: undefined,
             revenue: 99.9,
             tax: 20.99,
-            shipping: 13.99
+            shipping: 13.99,
+            coupon: undefined
           }]);
         });
 
@@ -1410,13 +1423,11 @@ describe('Google Analytics', function() {
           analytics.assert(window.ga.args.length === 6);
           analytics.deepEqual(toArray(window.ga.args[2]), ['ec:addProduct', {
             id: 'p-298',
-            quantity: 1,
-            currency: 'USD'
+            quantity: 1
           }]);
           analytics.deepEqual(toArray(window.ga.args[3]), ['ec:addProduct', {
             id: 'p-299',
-            quantity: 2,
-            currency: 'USD'
+            quantity: 2
           }]);
           analytics.deepEqual(toArray(window.ga.args[4]), ['ec:setAction', 'refund', {
             id: '780bc55'
