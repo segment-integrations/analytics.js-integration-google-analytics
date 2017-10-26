@@ -1,3 +1,8 @@
+2.9.4 / 2017-10-26
+=================
+
+* Release to support reversion of failed deploy.
+
 2.9.4 / 2017-08-31
 =================
 
