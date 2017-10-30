@@ -4,14 +4,14 @@ var Analytics = require('@segment/analytics.js-core').constructor;
 var sandbox = require('@segment/clear-env');
 var tester = require('@segment/analytics.js-integration-tester');
 var plugin = require('../lib/');
-// GA saves arrays as argument objects and `assert.deepEquals` fails when comparing
-// argument objects against arrays!
-var toArray = require('to-array');
+var sinon = require('sinon');
 
 describe('Google Analytics Universal', function() {
   var GA = plugin.Integration;
   var analytics;
   var ga;
+  var trackerNameSpy;
+  var gaStub;
   var settings = {
     anonymizeIp: true,
     domain: 'auto',
@@ -26,9 +26,24 @@ describe('Google Analytics Universal', function() {
     analytics.use(tester);
     ga = new GA(settings);
     analytics.add(ga);
+    analytics.initialize();
+    trackerNameSpy = sinon.spy(ga, '_getTrackerName');
   });
 
   afterEach(function() {
+    // This test is in place to ensure we are always passing trackerName with any request to the window.ga function.
+    // In the beforeEach block we set up a spy on the getTrackerName method in the integration.
+    // After all tests, we check to ensure the call count to the window.ga function is equal to the getTrackerName function.
+    // There is however one time that you invoke window.ga without a tracker name and that is when you 'create' the actual tracker: window.ga('create', opts.trackingId, config);
+    // This is always done first in our .initialize method so we can check the first argument passed to window.ga and if it is `create`, we just compare against all
+    // invokations of window.ga -= 1. This allows us to run some tests without needing to call initialize in a beforeEach.
+    if (gaStub && gaStub.called) {
+      var expectedCalls = gaStub.callCount;
+      if (gaStub.args[0][0] === 'create') expectedCalls -= 1;
+      analytics.assert(trackerNameSpy.callCount === expectedCalls, 'Tracker Name was not passed in a call to window.ga');
+      gaStub.reset();
+    }
+
     analytics.restore();
     analytics.reset();
     ga.reset();
@@ -38,6 +53,7 @@ describe('Google Analytics Universal', function() {
   describe('before loading', function() {
     beforeEach(function() {
       analytics.stub(ga, 'load');
+      gaStub = sinon.stub(window, 'ga');
     });
 
     describe('#initialize', function() {
@@ -45,32 +61,32 @@ describe('Google Analytics Universal', function() {
         ga.options.doubleClick = true;
         analytics.initialize();
         analytics.page();
-        analytics.deepEqual(toArray(window.ga.q[1]), ['require', 'displayfeatures']);
+        analytics.assert(gaStub.calledWith('require', 'displayfeatures'));
       });
 
       it('should require "linkid.js" if enhanced link attribution is `true`', function() {
         ga.options.enhancedLinkAttribution = true;
         analytics.initialize();
         analytics.page();
-        analytics.deepEqual(toArray(window.ga.q[1]), ['require', 'linkid', 'linkid.js']);
+        analytics.assert(gaStub.calledWith('require', 'linkid', 'linkid.js'));
       });
 
       it('should create window.GoogleAnalyticsObject', function() {
-        analytics.assert(!window.GoogleAnalyticsObject);
+        window.GoogleAnalyticsObject = undefined;
         analytics.initialize();
         analytics.page();
         analytics.assert(window.GoogleAnalyticsObject === 'ga');
       });
 
       it('should create window.ga', function() {
-        analytics.assert(!window.ga);
+        window.ga = undefined;
         analytics.initialize();
         analytics.page();
         analytics.assert(typeof window.ga === 'function');
       });
 
       it('should create window.ga.l', function() {
-        analytics.assert(!window.ga);
+        window.ga = undefined;
         analytics.initialize();
         analytics.page();
         analytics.assert(typeof window.ga.l === 'number');
@@ -87,7 +103,7 @@ describe('Google Analytics Universal', function() {
         if (window.location.hostname !== 'localhost') expectedOpts.cookieDomain = 'auto';
         analytics.initialize();
         analytics.page();
-        analytics.deepEqual(toArray(window.ga.q[0]), ['create', settings.trackingId, expectedOpts]);
+        analytics.assert(gaStub.calledWith('create', settings.trackingId, expectedOpts));
       });
 
       it('should name ga tracker if opted in', function() {
@@ -101,20 +117,20 @@ describe('Google Analytics Universal', function() {
         ga.options.nameTracker = true;
         analytics.initialize();
         analytics.page();
-        analytics.deepEqual(toArray(window.ga.q[0]), ['create', settings.trackingId, expectedOpts]);
+        analytics.assert(gaStub.calledWith('create', settings.trackingId, expectedOpts));
       });
 
       it('should call window.ga.require for optimize if enabled', function() {
         ga.options.optimize = 'GTM-XXXXX';
         analytics.initialize();
         analytics.page();
-        analytics.deepEqual(toArray(window.ga.q[1]), ['require', 'GTM-XXXXX']);
+        analytics.assert(gaStub.calledWith('require', 'GTM-XXXXX'));
       });
 
       it('should anonymize the ip', function() {
         analytics.initialize();
         analytics.page();
-        analytics.deepEqual(toArray(window.ga.q[1]), ['set', 'anonymizeIp', true]);
+        analytics.assert(gaStub.calledWith('set', 'anonymizeIp', true));
       });
 
       it('should call #load', function() {
@@ -127,7 +143,7 @@ describe('Google Analytics Universal', function() {
         analytics.user().id('baz');
         analytics.initialize();
         analytics.page();
-        analytics.notDeepEqual(toArray(window.ga.q[1]), ['set', 'userId', 'baz']);
+        analytics.assert(gaStub.neverCalledWith('set', 'userId', 'baz'));
       });
 
       it('should send universal user id if sendUserId option is true and user.id() is truthy', function() {
@@ -135,7 +151,7 @@ describe('Google Analytics Universal', function() {
         ga.options.sendUserId = true;
         analytics.initialize();
         analytics.page();
-        analytics.deepEqual(toArray(window.ga.q[1]), ['set', 'userId', 'baz']);
+        analytics.assert(gaStub.calledWith('set', 'userId', 'baz'));
       });
 
       it('should map custom dimensions & metrics using user.traits()', function() {
@@ -144,13 +160,13 @@ describe('Google Analytics Universal', function() {
         analytics.user().traits({ firstName: 'John', lastName: 'Doe', age: 20, foo: true, bar: false });
         analytics.initialize();
         analytics.page();
-        analytics.deepEqual(toArray(window.ga.q[2]), ['set', {
+        analytics.assert(gaStub.calledWith('set', {
           metric1: 'John',
           metric2: 'Doe',
           metric3: 'true',
           dimension2: 20,
           dimension3: 'false'
-        }]);
+        }));
       });
 
       it('should not set metrics, dimensions and content groupings if there are no traits', function() {
@@ -159,7 +175,7 @@ describe('Google Analytics Universal', function() {
         ga.options.contentGroupings = { contentGrouping1: 'foo' };
         analytics.initialize();
         analytics.page();
-        analytics.strictEqual(window.ga.q[2], undefined);
+        analytics.assert(gaStub.neverCalledWith('set', {}));
       });
 
       it('should set metrics and dimensions that have dots but arent nested', function() {
@@ -168,11 +184,11 @@ describe('Google Analytics Universal', function() {
         analytics.user().traits({ 'name.first': 'John', 'name.last': 'Doe', age: 20 });
         analytics.initialize();
         analytics.page();
-        analytics.deepEqual(toArray(window.ga.q[2]), ['set', {
+        analytics.assert(gaStub.calledWith('set', {
           metric1: 'John',
           metric2: 'Doe',
           dimension2: 20
-        }]);
+        }));
       });
 
       it('should set metrics and dimensions that are nested, using dot notation', function() {
@@ -187,11 +203,11 @@ describe('Google Analytics Universal', function() {
         });
         analytics.initialize();
         analytics.page();
-        analytics.deepEqual(toArray(window.ga.q[2]), ['set', {
+        analytics.assert(gaStub.calledWith('set', {
           metric1: 'John',
           metric2: 'Doe',
           dimension2: 20
-        }]);
+        }));
       });
     });
   });
@@ -205,52 +221,51 @@ describe('Google Analytics Universal', function() {
   describe('after loading', function() {
     beforeEach(function(done) {
       analytics.once('ready', done);
-      analytics.initialize();
     });
 
     describe('#page', function() {
       beforeEach(function() {
-        analytics.stub(window, 'ga');
+        gaStub = sinon.stub(window, 'ga');
       });
 
       it('should send a page view', function() {
         analytics.page();
-        analytics.called(window.ga, 'send', 'pageview', {
+        analytics.assert(gaStub.calledWith('send', 'pageview', {
           page: window.location.pathname,
           title: document.title,
           location: window.location.protocol + '//' + window.location.hostname + (window.location.port ? ':' + window.location.port : '') + window.location.pathname + window.location.search
-        });
+        }));
       });
 
       it('should omit location on subsequent page views', function() {
         analytics.page();
-        analytics.called(window.ga, 'send', 'pageview', {
+        analytics.assert(gaStub.calledWith('send', 'pageview', {
           page: window.location.pathname,
           title: document.title,
           location: window.location.protocol + '//' + window.location.hostname + (window.location.port ? ':' + window.location.port : '') + window.location.pathname + window.location.search
-        });
+        }));
         analytics.page();
-        analytics.called(window.ga, 'send', 'pageview', {
+        analytics.assert(gaStub.calledWith('send', 'pageview', {
           page: window.location.pathname,
           title: document.title
-        });
+        }));
       });
 
       it('should set the tracker\'s page object', function() {
         analytics.page();
-        analytics.called(window.ga, 'set', {
+        analytics.assert(gaStub.calledWith('set', {
           page: window.location.pathname,
           title: document.title
-        });
+        }));
       });
 
       it('should send a page view with properties', function() {
         analytics.page('category', 'name', { url: 'url', path: '/path' });
-        analytics.called(window.ga, 'send', 'pageview', {
+        analytics.assert(gaStub.calledWith('send', 'pageview', {
           page: '/path',
           title: 'category name',
           location: 'url'
-        });
+        }));
       });
 
       it('should not set custom dimensions/metrics if settings.setAllMappedProps is false', function() {
@@ -258,29 +273,29 @@ describe('Google Analytics Universal', function() {
         ga.options.metrics = { loadTime: 'metric1', levelAchieved: 'metric2' };
         ga.options.dimensions = { company: 'dimension2' };
         analytics.page('Page Viewed', { loadTime: '100', levelAchieved: '5', company: 'Google' });
-        analytics.didNotCall(window.ga, 'set', {
+        analytics.assert(gaStub.neverCalledWith('set', {
           metric1: '100',
           metric2: '5',
           dimension2: 'Google'
-        });
-        analytics.called(window.ga, 'send', 'pageview', {
+        }));
+        analytics.assert(gaStub.calledWith('send', 'pageview', {
           page: window.location.pathname,
           title: 'Page Viewed',
           location: window.location.protocol + '//' + window.location.hostname + (window.location.port ? ':' + window.location.port : '') + window.location.pathname + window.location.search,
           metric1: '100',
           metric2: '5',
           dimension2: 'Google'
-        });
+        }));
       });
 
       it('should send the query if its included', function() {
         ga.options.includeSearch = true;
         analytics.page('category', 'name', { url: 'url', path: '/path', search: '?q=1' });
-        analytics.called(window.ga, 'send', 'pageview', {
+        analytics.assert(gaStub.calledWith('send', 'pageview', {
           page: '/path?q=1',
           title: 'category name',
           location: 'url'
-        });
+        }));
       });
 
       it('should send the campaign info if its included', function() {
@@ -294,7 +309,7 @@ describe('Google Analytics Universal', function() {
             content: 'test'
           }
         });
-        analytics.called(window.ga, 'send', 'pageview', {
+        analytics.assert(gaStub.calledWith('send', 'pageview', {
           page: '/path?q=1',
           title: 'category name',
           location: 'url',
@@ -303,7 +318,7 @@ describe('Google Analytics Universal', function() {
           campaignMedium: 'test',
           campaignKeyword: 'test',
           campaignContent: 'test'
-        });
+        }));
       });
 
       it('should map and set custom dimensions, metrics & content groupings using page.properties()', function() {
@@ -312,12 +327,12 @@ describe('Google Analytics Universal', function() {
         ga.options.contentGroupings = { section: 'contentGrouping1' };
         analytics.page({ score: 21, author: 'Author', postType: 'blog', section: 'News' });
 
-        analytics.called(window.ga, 'set', {
+        analytics.assert(gaStub.calledWith('set', {
           metric1: 21,
           dimension1: 'Author',
           dimension2: 'blog',
           contentGrouping1: 'News'
-        });
+        }));
       });
 
       it('should map custom dimensions, metrics & content groupings even if mapped to the same key', function() {
@@ -326,24 +341,24 @@ describe('Google Analytics Universal', function() {
         ga.options.contentGroupings = { section: 'contentGrouping1', score: 'contentGrouping5' };
         analytics.page({ score: 21, author: 'Author', postType: 'blog', section: 'News' });
 
-        analytics.called(window.ga, 'set', {
+        analytics.assert(gaStub.calledWith('set', {
           metric1: 21,
           dimension1: 'Author',
           dimension2: 'blog',
           contentGrouping1: 'News',
           contentGrouping5: 21
-        });
+        }));
       });
 
       it('should track a named page', function() {
         analytics.page('Name');
-        analytics.called(window.ga, 'send', 'event', {
+        analytics.assert(gaStub.calledWith('send', 'event', {
           eventCategory: 'All',
           eventAction: 'Viewed Name Page',
           eventLabel: undefined,
           eventValue: 0,
           nonInteraction: true
-        });
+        }));
       });
 
       it('should track a named page with context', function() {
@@ -356,7 +371,7 @@ describe('Google Analytics Universal', function() {
             content: 'test'
           }
         });
-        analytics.called(window.ga, 'send', 'event', {
+        analytics.assert(gaStub.calledWith('send', 'event', {
           eventCategory: 'All',
           eventAction: 'Viewed Name Page',
           eventLabel: undefined,
@@ -367,29 +382,29 @@ describe('Google Analytics Universal', function() {
           campaignMedium: 'test',
           campaignKeyword: 'test',
           campaignContent: 'test'
-        });
+        }));
       });
 
       it('should track a name + category page', function() {
         analytics.page('Category', 'Name');
-        analytics.called(window.ga, 'send', 'event', {
+        analytics.assert(gaStub.calledWith('send', 'event', {
           eventCategory: 'Category',
           eventAction: 'Viewed Category Name Page',
           eventLabel: undefined,
           eventValue: 0,
           nonInteraction: true
-        });
+        }));
       });
 
       it('should track a categorized page', function() {
         analytics.page('Category', 'Name');
-        analytics.called(window.ga, 'send', 'event', {
+        analytics.assert(gaStub.calledWith('send', 'event', {
           eventCategory: 'Category',
           eventAction: 'Viewed Category Page',
           eventLabel: undefined,
           eventValue: 0,
           nonInteraction: true
-        });
+        }));
       });
 
       it('should not track a named or categorized page when the option is off', function() {
@@ -407,71 +422,71 @@ describe('Google Analytics Universal', function() {
 
       it('should override referrer when manually set', function() {
         analytics.page({ referrer: 'http://lifeofpablo.com' });
-        analytics.called(window.ga, 'set', {
+        analytics.assert(gaStub.calledWith('set', {
           page: window.location.pathname,
           title: document.title,
           referrer: 'http://lifeofpablo.com'
-        });
+        }));
       });
 
       it('should not override referrer if not manually set', function() {
         analytics.page();
-        analytics.called(window.ga, 'set', {
+        analytics.assert(gaStub.calledWith('set', {
           page: window.location.pathname,
           title: document.title
-        });
+        }));
       });
     });
 
     describe('#identify', function() {
       beforeEach(function() {
-        analytics.stub(window, 'ga');
+        gaStub = sinon.stub(window, 'ga');
       });
 
       it('should send user id if sendUserId option is true and identify.user() is truthy', function() {
         ga.options.sendUserId = true;
         analytics.identify('Steven');
-        analytics.called(window.ga, 'set', 'userId', 'Steven');
+        analytics.assert(gaStub.calledWith('set', 'userId', 'Steven'));
       });
 
       it('should send not user id if sendUserId option is false and identify.user() is truthy', function() {
         ga.options.sendUserId = false;
         analytics.identify('Steven');
-        analytics.assert(window.ga.args.length === 0);
+        analytics.assert(gaStub.neverCalledWith('set', 'Steven'));
       });
 
       it('should set custom dimensions', function() {
         ga.options.dimensions = { age: 'dimension1' };
         analytics.identify('Steven', { age: 25 });
-        analytics.called(window.ga, 'set', { dimension1: 25 });
+        analytics.assert(gaStub.calledWith('set', { dimension1: 25 }));
       });
     });
 
     describe('#track', function() {
       beforeEach(function() {
-        analytics.stub(window, 'ga');
+        gaStub = sinon.stub(window, 'ga');
       });
 
       it('should send an event', function() {
         analytics.track('event');
-        analytics.called(window.ga, 'send', 'event', {
+        analytics.assert(gaStub.calledWith('send', 'event', {
           eventCategory: 'All',
           eventAction: 'event',
           eventLabel: undefined,
           eventValue: 0,
           nonInteraction: false
-        });
+        }));
       });
 
       it('should send an event and map category with a capital C', function() {
         analytics.track('event', { Category: 'blah' });
-        analytics.called(window.ga, 'send', 'event', {
+        analytics.assert(gaStub.calledWith('send', 'event', {
           eventCategory: 'blah',
           eventAction: 'event',
           eventLabel: undefined,
           eventValue: 0,
           nonInteraction: false
-        });
+        }));
       });
 
       it('should send an event with context', function() {
@@ -484,7 +499,7 @@ describe('Google Analytics Universal', function() {
             content: 'test'
           }
         });
-        analytics.called(window.ga, 'send', 'event', {
+        analytics.assert(gaStub.calledWith('send', 'event', {
           eventCategory: 'All',
           eventAction: 'event',
           eventLabel: undefined,
@@ -495,121 +510,121 @@ describe('Google Analytics Universal', function() {
           campaignMedium: 'test',
           campaignKeyword: 'test',
           campaignContent: 'test'
-        });
+        }));
       });
 
       it('should send a category property', function() {
         analytics.track('event', { category: 'category' });
-        analytics.called(window.ga, 'send', 'event', {
+        analytics.assert(gaStub.calledWith('send', 'event', {
           eventCategory: 'category',
           eventAction: 'event',
           eventLabel: undefined,
           eventValue: 0,
           nonInteraction: false
-        });
+        }));
       });
 
       it('should send a stored category', function() {
         analytics.page('category', 'name');
         analytics.track('event', {});
-        analytics.called(window.ga, 'send', 'event', {
+        analytics.assert(gaStub.calledWith('send', 'event', {
           eventCategory: 'category',
           eventAction: 'event',
           eventLabel: undefined,
           eventValue: 0,
           nonInteraction: false
-        });
+        }));
       });
 
       it('should send a category property even if there is a stored category', function() {
         analytics.page('category(page)');
         analytics.track('event', { category: 'category(track)' });
-        analytics.called(window.ga, 'send', 'event', {
+        analytics.assert(gaStub.calledWith('send', 'event', {
           eventCategory: 'category(track)',
           eventAction: 'event',
           eventLabel: undefined,
           eventValue: 0,
           nonInteraction: false
-        });
+        }));
       });
 
       it('should send a label property', function() {
         analytics.track('event', { label: 'label' });
-        analytics.called(window.ga, 'send', 'event', {
+        analytics.assert(gaStub.calledWith('send', 'event', {
           eventCategory: 'All',
           eventAction: 'event',
           eventLabel: 'label',
           eventValue: 0,
           nonInteraction: false
-        });
+        }));
       });
 
       it('should send a rounded value property', function() {
         analytics.track('event', { value: 1.1 });
-        analytics.called(window.ga, 'send', 'event', {
+        analytics.assert(gaStub.calledWith('send', 'event', {
           eventCategory: 'All',
           eventAction: 'event',
           eventLabel: undefined,
           eventValue: 1,
           nonInteraction: false
-        });
+        }));
       });
 
       it('should prefer a rounded revenue property', function() {
         analytics.track('event', { revenue: 9.99 });
-        analytics.called(window.ga, 'send', 'event', {
+        analytics.assert(gaStub.calledWith('send', 'event', {
           eventCategory: 'All',
           eventAction: 'event',
           eventLabel: undefined,
           eventValue: 10,
           nonInteraction: false
-        });
+        }));
       });
 
       it('should send a non-interaction property', function() {
         analytics.track('event', { nonInteraction: 1 });
-        analytics.called(window.ga, 'send', 'event', {
+        analytics.assert(gaStub.calledWith('send', 'event', {
           eventCategory: 'All',
           eventAction: 'event',
           eventLabel: undefined,
           eventValue: 0,
           nonInteraction: true
-        });
+        }));
       });
 
       it('should send a non-interaction option', function() {
         analytics.track('event', {}, { 'Google Analytics': { nonInteraction: 1 } });
-        analytics.called(window.ga, 'send', 'event', {
+        analytics.assert(gaStub.calledWith('send', 'event', {
           eventCategory: 'All',
           eventAction: 'event',
           eventLabel: undefined,
           eventValue: 0,
           nonInteraction: true
-        });
+        }));
       });
 
       it('should respect the non-interaction option', function() {
         ga.options.nonInteraction = true;
         analytics.track('event');
-        analytics.called(window.ga, 'send', 'event', {
+        analytics.assert(gaStub.calledWith('send', 'event', {
           eventCategory: 'All',
           eventAction: 'event',
           eventLabel: undefined,
           eventValue: 0,
           nonInteraction: true
-        });
+        }));
       });
 
       it('should give precendence to a non-interaction option defined in the event props', function() {
         ga.options.nonInteraction = true;
         analytics.track('event', { nonInteraction: false });
-        analytics.called(window.ga, 'send', 'event', {
+        analytics.assert(gaStub.calledWith('send', 'event', {
           eventCategory: 'All',
           eventAction: 'event',
           eventLabel: undefined,
           eventValue: 0,
           nonInteraction: false
-        });
+        }));
       });
 
       it('should map and set custom dimensions & metrics using track.properties() if setAllMappedProps is true', function() {
@@ -618,11 +633,11 @@ describe('Google Analytics Universal', function() {
         ga.options.dimensions = { referrer: 'dimension2' };
         analytics.track('Level Unlocked', { loadTime: '100', levelAchieved: '5', referrer: 'Google' });
 
-        analytics.called(window.ga, 'set', {
+        analytics.assert(gaStub.calledWith('set', {
           metric1: '100',
           metric2: '5',
           dimension2: 'Google'
-        });
+        }));
       });
 
       it('should send but not set custom dimensions & metrics if setAllMappedProps is false', function() {
@@ -631,13 +646,13 @@ describe('Google Analytics Universal', function() {
         ga.options.dimensions = { referrer: 'dimension2' };
         analytics.track('Level Unlocked', { loadTime: '100', levelAchieved: '5', referrer: 'Google' });
 
-        analytics.didNotCall(window.ga, 'set', {
+        analytics.assert(gaStub.neverCalledWith('set', {
           metric1: '100',
           metric2: '5',
           dimension2: 'Google'
-        });
+        }));
 
-        analytics.called(window.ga, 'send', 'event', {
+        analytics.assert(gaStub.calledWith('send', 'event', {
           eventCategory: 'All',
           eventAction: 'Level Unlocked',
           eventLabel: undefined,
@@ -646,25 +661,25 @@ describe('Google Analytics Universal', function() {
           metric1: '100',
           metric2: '5',
           dimension2: 'Google'
-        });
+        }));
       });
     });
 
     describe('ecommerce', function() {
       beforeEach(function() {
-        analytics.spy(window, 'ga');
+        gaStub = sinon.stub(window, 'ga');
       });
 
       it('should require ecommerce.js', function() {
         analytics.track('order completed', { orderId: 'ee099bf7' });
-        analytics.called(window.ga, 'require', 'ecommerce');
+        analytics.assert(gaStub.calledWith('require', 'ecommerce'));
         analytics.assert(ga.ecommerce);
       });
 
       it('should not require ecommerce if .ecommerce is true', function() {
         ga.ecommerce = true;
         analytics.track('order completed', { orderId: 'e213e4da' });
-        analytics.didNotCall(window.ga, 'require', 'ecommerce');
+        analytics.assert(gaStub.neverCalledWith('require', 'ecommerce'));
       });
 
       it('should send simple ecommerce data', function() {
@@ -693,16 +708,17 @@ describe('Google Analytics Universal', function() {
           }]
         });
 
-        analytics.deepEqual(window.ga.args[1], ['ecommerce:addTransaction', {
+        
+        analytics.assert(gaStub.calledWith('ecommerce:addTransaction', {
           id: '780bc55',
           revenue: 99.99,
           shipping: 13.99,
           affiliation: undefined,
           tax: 20.99,
           currency: 'USD'
-        }]);
+        }));
 
-        analytics.deepEqual(window.ga.args[2], ['ecommerce:addItem', {
+        analytics.assert(gaStub.calledWith('ecommerce:addItem', {
           id: '780bc55',
           category: undefined,
           name: 'my product',
@@ -710,9 +726,9 @@ describe('Google Analytics Universal', function() {
           quantity: 1,
           sku: 'p-298',
           currency: 'USD'
-        }]);
+        }));
 
-        analytics.deepEqual(window.ga.args[3], ['ecommerce:addItem', {
+        analytics.assert(gaStub.calledWith('ecommerce:addItem', {
           id: '780bc55',
           category: undefined,
           name: 'other product',
@@ -720,9 +736,9 @@ describe('Google Analytics Universal', function() {
           sku: 'p-299',
           quantity: 3,
           currency: 'USD'
-        }]);
+        }));
 
-        analytics.deepEqual(window.ga.args[4], ['ecommerce:send']);
+        analytics.assert(gaStub.withArgs('ecommerce:send').lastCall);
       });
 
       it('should fallback to revenue', function() {
@@ -734,14 +750,14 @@ describe('Google Analytics Universal', function() {
           products: []
         });
 
-        analytics.deepEqual(window.ga.args[1], ['ecommerce:addTransaction', {
+        analytics.assert(gaStub.calledWith('ecommerce:addTransaction', {
           id: '5d4c7cb5',
           revenue: 99.9,
           shipping: 13.99,
           affiliation: undefined,
           tax: 20.99,
           currency: 'USD'
-        }]);
+        }));
       });
 
       it('should pass custom currency', function() {
@@ -754,14 +770,14 @@ describe('Google Analytics Universal', function() {
           currency: 'EUR'
         });
 
-        analytics.deepEqual(window.ga.args[1], ['ecommerce:addTransaction', {
+        analytics.assert(gaStub.calledWith('ecommerce:addTransaction', {
           id: '5d4c7cb5',
           revenue: 99.9,
           shipping: 13.99,
           affiliation: undefined,
           tax: 20.99,
           currency: 'EUR'
-        }]);
+        }));
       });
     });
   });
