@@ -14,7 +14,7 @@ describe('Google Analytics Universal', function() {
   var gaStub;
   var settings = {
     anonymizeIp: true,
-    domain: 'auto',
+    domain: '',
     siteSpeedSampleRate: 42,
     sampleRate: 15,
     trackingId: 'UA-27033709-12'
@@ -94,13 +94,39 @@ describe('Google Analytics Universal', function() {
 
       it('should call window.ga.create with options', function() {
         var expectedOpts = {
-          cookieDomain: 'none',
+          cookieDomain: 'auto',
           siteSpeedSampleRate: settings.siteSpeedSampleRate,
           sampleRate: settings.sampleRate,
           allowLinker: true
         };
         // required to pass saucelab tests since those tests are not done in localhost
-        if (window.location.hostname !== 'localhost') expectedOpts.cookieDomain = 'auto';
+        // if (window.location.hostname !== 'localhost') expectedOpts.cookieDomain = 'auto';
+        analytics.initialize();
+        analytics.page();
+        analytics.assert(gaStub.calledWith('create', settings.trackingId, expectedOpts));
+      });
+
+      it('should name the cookie domain if one has been defined', function() {
+        ga.options.domain = 'lookatme!';
+        var expectedOpts = {
+          cookieDomain: 'lookatme!',
+          siteSpeedSampleRate: settings.siteSpeedSampleRate,
+          sampleRate: settings.sampleRate,
+          allowLinker: true
+        };
+        analytics.initialize();
+        analytics.page();
+        analytics.assert(gaStub.calledWith('create', settings.trackingId, expectedOpts));
+      });
+
+      it('should safely fall back on a default cookie domain of \'auto\' if one has not been defined', function() {
+        settings.domain = '';
+        var expectedOpts = {
+          cookieDomain: 'auto',
+          siteSpeedSampleRate: settings.siteSpeedSampleRate,
+          sampleRate: settings.sampleRate,
+          allowLinker: true
+        };
         analytics.initialize();
         analytics.page();
         analytics.assert(gaStub.calledWith('create', settings.trackingId, expectedOpts));
@@ -108,7 +134,7 @@ describe('Google Analytics Universal', function() {
 
       it('should name ga tracker if opted in', function() {
         var expectedOpts = {
-          cookieDomain: 'none',
+          cookieDomain: 'auto',
           siteSpeedSampleRate: settings.siteSpeedSampleRate,
           sampleRate: settings.sampleRate,
           allowLinker: true,
