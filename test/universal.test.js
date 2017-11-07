@@ -64,6 +64,10 @@ describe('Universal', function() {
         spy = sinon.spy(window, 'ga');
       });
 
+      afterEach(function() {
+        spy.reset();
+      });
+
       it('should require \'displayfeatures\' if .doubleClick option is `true`', function() {
         ga.options.doubleClick = true;
         analytics.initialize();
