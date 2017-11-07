@@ -32,25 +32,23 @@ describe('Universal', function() {
   });
 
   afterEach(function() {
-    analytics.waitForScripts(function() {
-      // This test is in place to ensure we are always passing trackerName with any request to the window.ga function.
-      // In the beforeEach block we set up a spy on the getTrackerName method in the integration.
-      // After all tests, we check to ensure the call count to the window.ga function is equal to the getTrackerName function.
-      // There is however one time that you invoke window.ga without a tracker name and that is when you 'create' the actual tracker: window.ga('create', opts.trackingId, config);
-      // This is always done first in our .initialize method so we can check the first argument passed to window.ga and if it is `create`, we just compare against all
-      // invokations of window.ga -= 1. This allows us to run some tests without needing to call initialize in a beforeEach.
-      if (gaStub && gaStub.called) {
-        var expectedCalls = gaStub.callCount;
-        if (gaStub.args[0][0] === 'create') expectedCalls -= 1;
-        analytics.assert(trackerNameSpy.callCount === expectedCalls, 'Tracker Name was not passed in a call to window.ga');
-        gaStub.reset();
-      }
-  
-      analytics.restore();
-      analytics.reset();
-      ga.reset();
-      sandbox();
-    });
+    // This test is in place to ensure we are always passing trackerName with any request to the window.ga function.
+    // In the beforeEach block we set up a spy on the getTrackerName method in the integration.
+    // After all tests, we check to ensure the call count to the window.ga function is equal to the getTrackerName function.
+    // There is however one time that you invoke window.ga without a tracker name and that is when you 'create' the actual tracker: window.ga('create', opts.trackingId, config);
+    // This is always done first in our .initialize method so we can check the first argument passed to window.ga and if it is `create`, we just compare against all
+    // invokations of window.ga -= 1. This allows us to run some tests without needing to call initialize in a beforeEach.
+    if (gaStub && gaStub.called) {
+      var expectedCalls = gaStub.callCount;
+      if (gaStub.args[0][0] === 'create') expectedCalls -= 1;
+      analytics.assert(trackerNameSpy.callCount === expectedCalls, 'Tracker Name was not passed in a call to window.ga');
+      gaStub.reset();
+    }
+
+    analytics.restore();
+    analytics.reset();
+    ga.reset();
+    sandbox();
   });
 
   describe('before loading', function() {
