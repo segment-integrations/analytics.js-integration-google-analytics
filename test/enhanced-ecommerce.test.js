@@ -30,10 +30,12 @@ describe('Universal Enhanced Ecommerce', function() {
   });
 
   afterEach(function() {
-    analytics.restore();
-    analytics.reset();
-    ga.reset();
-    sandbox();
+    analytics.waitForScripts(function() {
+      analytics.restore();
+      analytics.reset();
+      ga.reset();
+      sandbox();
+    });
   });
 
   describe('after loading', function() {
