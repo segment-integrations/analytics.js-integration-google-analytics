@@ -695,7 +695,7 @@ describe('Universal', function() {
 
     describe('ecommerce', function() {
       beforeEach(function() {
-        analytics.spy(window, 'ga');
+        analytics.stub(window, 'ga');
       });
 
       it('should require ecommerce.js', function() {

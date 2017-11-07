@@ -45,7 +45,7 @@ describe('Universal Enhanced Ecommerce', function() {
 
     describe('enhanced ecommerce', function() {
       beforeEach(function() {
-        analytics.spy(window, 'ga');
+        analytics.stub(window, 'ga');
       });
 
       it('should require ec.js', function() {
