@@ -45,6 +45,7 @@ describe('Universal', function() {
       gaStub.reset();
     }
 
+    window.gaplugins = undefined;
     analytics.restore();
     analytics.reset();
     ga.reset();
@@ -62,10 +63,6 @@ describe('Universal', function() {
       beforeEach(function() {
         analytics.initialize();
         spy = sinon.spy(window, 'ga');
-      });
-
-      afterEach(function() {
-        spy.restore();
       });
 
       it('should require \'displayfeatures\' if .doubleClick option is `true`', function() {
