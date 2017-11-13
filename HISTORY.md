@@ -1,4 +1,14 @@
-2.9.4 / 2017-10-26
+2.12.0 / 2017-11-13
+=================
+
+* Release to support reversion of refactor work.
+
+2.11.0 / 2017-11-13
+=================
+
+* Parity refactor.
+
+2.9.5 / 2017-10-26
 =================
 
 * Release to support reversion of failed deploy.
