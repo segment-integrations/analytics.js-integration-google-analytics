@@ -1,4 +1,9 @@
-2.9.4 / 2017-10-26
+2.9.6 / 2017-11-28
+=================
+
+* Add support for useGoogleAmpClientId option.
+
+2.9.5 / 2017-10-26
 =================
 
 * Release to support reversion of failed deploy.
