@@ -37,6 +37,7 @@ describe('Google Analytics', function() {
       .option('classic', false)
       .option('contentGroupings', {})
       .option('dimensions', {})
+      .option('useGoogleAmpClientId', false)
       .option('domain', 'auto')
       .option('doubleClick', false)
       .option('enhancedEcommerce', false)
@@ -62,7 +63,8 @@ describe('Google Analytics', function() {
       domain: 'auto',
       siteSpeedSampleRate: 42,
       sampleRate: 15,
-      trackingId: 'UA-27033709-12'
+      trackingId: 'UA-27033709-12',
+      useGoogleAmpClientId: false
     };
 
     beforeEach(function() {
@@ -120,7 +122,8 @@ describe('Google Analytics', function() {
             cookieDomain: 'none',
             siteSpeedSampleRate: settings.siteSpeedSampleRate,
             sampleRate: settings.sampleRate,
-            allowLinker: true
+            allowLinker: true,
+            useGoogleAmpClientId: false
           };
           // required to pass saucelab tests since those tests are not done in localhost
           if (window.location.hostname !== 'localhost') expectedOpts.cookieDomain = 'auto';
@@ -135,9 +138,25 @@ describe('Google Analytics', function() {
             siteSpeedSampleRate: settings.siteSpeedSampleRate,
             sampleRate: settings.sampleRate,
             allowLinker: true,
-            name: 'segmentGATracker'
+            name: 'segmentGATracker',
+            useGoogleAmpClientId: false
           };
           ga.options.nameTracker = true;
+          analytics.initialize();
+          analytics.page();
+          analytics.deepEqual(toArray(window.ga.q[0]), ['create', settings.trackingId, expectedOpts]);
+        });
+
+        it('should use AMP Id as the Client Id if the setting is enabled', function() {
+          ga.options.useGoogleAmpClientId = true;
+          var expectedOpts = {
+            cookieDomain: 'none',
+            siteSpeedSampleRate: settings.siteSpeedSampleRate,
+            sampleRate: settings.sampleRate,
+            allowLinker: true,
+            useGoogleAmpClientId: true
+          };
+
           analytics.initialize();
           analytics.page();
           analytics.deepEqual(toArray(window.ga.q[0]), ['create', settings.trackingId, expectedOpts]);
