@@ -1177,6 +1177,10 @@ describe('Google Analytics', function() {
         });
 
         it('should send order started data', function() {
+          ga.options.setAllMappedProps = false;
+          ga.options.dimensions = { testDimension: 'dimension1' };
+          ga.options.metrics = { testMetric: 'metric1' };
+
           analytics.track('checkout started', {
             currency: 'CAD',
             products: [{
@@ -1191,7 +1195,9 @@ describe('Google Analytics', function() {
               sku: 'p-299'
             }],
             step: 1,
-            paymentMethod: 'Visa'
+            paymentMethod: 'Visa', 
+            testDimension: true,
+            testMetric: true
           });
           analytics.assert(window.ga.args.length === 6);
           analytics.deepEqual(toArray(window.ga.args[1]), ['set', '&cu', 'CAD']);
@@ -1219,10 +1225,18 @@ describe('Google Analytics', function() {
             step: 1,
             option: 'Visa'
           }]);
-          analytics.deepEqual(toArray(window.ga.args[5]), ['send', 'event', 'EnhancedEcommerce', 'checkout started', { nonInteraction: 1 }]);
+          analytics.deepEqual(toArray(window.ga.args[5]), ['send', 'event', 'EnhancedEcommerce', 'checkout started', { 
+            dimension1: 'true', 
+            metric1: 'true',
+            nonInteraction: 1 
+          }]);
         });
 
         it('should send order updated data', function() {
+          ga.options.setAllMappedProps = false;
+          ga.options.dimensions = { testDimension: 'dimension1' };
+          ga.options.metrics = { testMetric: 'metric1' };
+
           analytics.track('order updated', {
             currency: 'CAD',
             products: [{
@@ -1239,7 +1253,9 @@ describe('Google Analytics', function() {
               sku: 'p-299'
             }],
             step: 1,
-            paymentMethod: 'Visa'
+            paymentMethod: 'Visa', 
+            testDimension: true,
+            testMetric: true
           });
           analytics.assert(window.ga.args.length === 6);
           analytics.deepEqual(toArray(window.ga.args[1]), ['set', '&cu', 'CAD']);
@@ -1267,7 +1283,11 @@ describe('Google Analytics', function() {
             step: 1,
             option: 'Visa'
           }]);
-          analytics.deepEqual(toArray(window.ga.args[5]), ['send', 'event', 'EnhancedEcommerce', 'order updated', { nonInteraction: 1 }]);
+          analytics.deepEqual(toArray(window.ga.args[5]), ['send', 'event', 'EnhancedEcommerce', 'order updated', { 
+            dimension1: 'true', 
+            metric1: 'true',
+            nonInteraction: 1 
+          }]);
         });
 
         it('should send checkout step viewed data', function() {
@@ -1488,16 +1508,28 @@ describe('Google Analytics', function() {
         });
 
         it('should send full order refunded data', function() {
-          analytics.track('order refunded', { orderId: '780bc55' });
+          ga.options.setAllMappedProps = false;
+          ga.options.dimensions = { testDimension: 'dimension1' };
+          ga.options.metrics = { testMetric: 'metric1' };
+
+          analytics.track('order refunded', { orderId: '780bc55', testDimension: true, testMetric: true });
 
           analytics.assert(window.ga.args.length === 4);
           analytics.deepEqual(toArray(window.ga.args[2]), ['ec:setAction', 'refund', {
             id: '780bc55'
           }]);
-          analytics.deepEqual(toArray(window.ga.args[3]), ['send', 'event', 'EnhancedEcommerce', 'order refunded', { nonInteraction: 1 }]);
+          analytics.deepEqual(toArray(window.ga.args[3]), ['send', 'event', 'EnhancedEcommerce', 'order refunded', { 
+            dimension1: 'true', 
+            metric1: 'true',
+            nonInteraction: 1 
+          }]);
         });
 
         it('should send partial order refunded data', function() {
+          ga.options.setAllMappedProps = false;
+          ga.options.dimensions = { testDimension: 'dimension1' };
+          ga.options.metrics = { testMetric: 'metric1' };
+
           analytics.track('order refunded', {
             orderId: '780bc55',
             products: [{
@@ -1506,7 +1538,9 @@ describe('Google Analytics', function() {
             }, {
               quantity: 2,
               sku: 'p-299'
-            }]
+            }], 
+            testDimension: true,
+            testMetric: true
           });
 
           analytics.assert(window.ga.args.length === 6);
@@ -1521,7 +1555,11 @@ describe('Google Analytics', function() {
           analytics.deepEqual(toArray(window.ga.args[4]), ['ec:setAction', 'refund', {
             id: '780bc55'
           }]);
-          analytics.deepEqual(toArray(window.ga.args[5]), ['send', 'event', 'EnhancedEcommerce', 'order refunded', { nonInteraction: 1 }]);
+          analytics.deepEqual(toArray(window.ga.args[5]), ['send', 'event', 'EnhancedEcommerce', 'order refunded', { 
+            dimension1: 'true',
+            metric1: 'true',
+            nonInteraction: 1 
+          }]);
         });
       });
     });
