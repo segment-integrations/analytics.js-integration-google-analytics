@@ -1156,12 +1156,18 @@ describe('Google Analytics', function() {
         });
 
         it('should send promotion clicked data', function() {
+          ga.options.setAllMappedProps = false;
+          ga.options.dimensions = { testDimension: 'dimension1' };
+          ga.options.metrics = { testMetric: 'metric1' };
+
           analytics.track('promotion clicked', {
             currency: 'CAD',
             promotion_id: 'PROMO_1234',
             name: 'Summer Sale',
             creative: 'summer_banner2',
-            position: 'banner_slot1'
+            position: 'banner_slot1', 
+            testDimension: true,
+            testMetric: true
           });
 
           analytics.assert(window.ga.args.length === 5);
@@ -1173,7 +1179,11 @@ describe('Google Analytics', function() {
             position: 'banner_slot1'
           }]);
           analytics.deepEqual(toArray(window.ga.args[3]), ['ec:setAction', 'promo_click', {}]);
-          analytics.deepEqual(toArray(window.ga.args[4]), ['send', 'event', 'EnhancedEcommerce', 'promotion clicked', { nonInteraction: 1 }]);
+          analytics.deepEqual(toArray(window.ga.args[4]), ['send', 'event', 'EnhancedEcommerce', 'promotion clicked', { 
+            dimension1: 'true', 
+            metric1: 'true',
+            nonInteraction: 1 
+          }]);
         });
 
         it('should send order started data', function() {
