@@ -890,8 +890,8 @@ describe('Google Analytics', function() {
             name: 'my product',
             category: 'cat 1',
             sku: 'p-298',
-            testDimension: 'true', 
-            testMetric: 'true'
+            testDimension: true, 
+            testMetric: true
           });
           
           analytics.assert(window.ga.args.length === 5);
@@ -953,8 +953,8 @@ describe('Google Analytics', function() {
             name: 'my product',
             category: 'cat 1',
             sku: 'p-298', 
-            testDimension: 'true', 
-            testMetric: 'true'
+            testDimension: true, 
+            testMetric: true
           });
 
           analytics.assert(window.ga.args.length === 5);
@@ -990,8 +990,8 @@ describe('Google Analytics', function() {
             category: 'cat 1',
             sku: 'p-298',
             list: 'Apparel Gallery', 
-            testDimension: 'true', 
-            testMetric: 'true'
+            testDimension: true, 
+            testMetric: true
           });
 
           analytics.assert(window.ga.args.length === 5);
@@ -1027,8 +1027,8 @@ describe('Google Analytics', function() {
             products: [
               { product_id: '507f1f77bcf86cd799439011' }
             ],
-            testDimension: 'true', 
-            testMetric: 'true'
+            testDimension: true, 
+            testMetric: true
           });
           analytics.assert(window.ga.args.length === 4);
           analytics.deepEqual(toArray(window.ga.args[1]), ['set', '&cu', 'USD']);
