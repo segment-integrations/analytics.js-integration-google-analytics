@@ -1089,6 +1089,10 @@ describe('Google Analytics', function() {
         });
 
         it('should send product clicked data', function() {
+          ga.options.setAllMappedProps = false;
+          ga.options.dimensions = { testDimension: 'dimension1' };
+          ga.options.metrics = { testMetric: 'metric1' };
+
           analytics.track('product clicked', {
             currency: 'CAD',
             quantity: 1,
@@ -1096,7 +1100,9 @@ describe('Google Analytics', function() {
             name: 'my product',
             category: 'cat 1',
             sku: 'p-298',
-            list: 'search results'
+            list: 'search results', 
+            testDimension: true,
+            testMetric: true
           });
 
           analytics.assert(window.ga.args.length === 5);
@@ -1112,7 +1118,11 @@ describe('Google Analytics', function() {
             currency: 'CAD'
           }]);
           analytics.deepEqual(toArray(window.ga.args[3]), ['ec:setAction', 'click', { list: 'search results' }]);
-          analytics.deepEqual(toArray(window.ga.args[4]), ['send', 'event', 'cat 1', 'product clicked', { nonInteraction: 1 }]);
+          analytics.deepEqual(toArray(window.ga.args[4]), ['send', 'event', 'cat 1', 'product clicked', { 
+            dimension1: 'true', 
+            metric1: 'true',
+            nonInteraction: 1 
+          }]);
         });
 
         it('should send promotion viewed data', function() {
