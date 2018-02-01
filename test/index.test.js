@@ -1017,12 +1017,18 @@ describe('Google Analytics', function() {
 
         it('should send product impression data via product list viewed', function() {
           // If using addImpression ever becomes optional, will need to add a setting modification here.
+          ga.options.setAllMappedProps = false;
+          ga.options.dimensions = { testDimension: 'dimension1' };
+          ga.options.metrics = { testMetric: 'metric1' };
+
           analytics.track('Product List Viewed', {
             category: 'cat 1',
             list_id: '1234',
             products: [
               { product_id: '507f1f77bcf86cd799439011' }
-            ]
+            ],
+            testDimension: 'true', 
+            testMetric: 'true'
           });
           analytics.assert(window.ga.args.length === 4);
           analytics.deepEqual(toArray(window.ga.args[1]), ['set', '&cu', 'USD']);
@@ -1032,7 +1038,11 @@ describe('Google Analytics', function() {
             list: '1234',
             position: 1
           }]);
-          analytics.deepEqual(toArray(window.ga.args[3]), ['send', 'event', 'cat 1', 'Product List Viewed', { nonInteraction: 1 }]);
+          analytics.deepEqual(toArray(window.ga.args[3]), ['send', 'event', 'cat 1', 'Product List Viewed', { 
+            dimension1: 'true', 
+            metric1: 'true',
+            nonInteraction: 1 
+          }]);
         });
 
         it('should send product impression data via product list filtered', function() {
