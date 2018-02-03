@@ -1381,6 +1381,10 @@ describe('Google Analytics', function() {
         });
 
         it('should send order completed data', function() {
+          ga.options.setAllMappedProps = false;
+          ga.options.dimensions = { testDimension: 'dimension1' };
+          ga.options.metrics = { testMetric: 'metric1' };
+
           analytics.track('order completed', {
             orderId: '780bc55',
             total: 99.9,
@@ -1389,6 +1393,8 @@ describe('Google Analytics', function() {
             currency: 'CAD',
             coupon: 'coupon',
             affiliation: 'affiliation',
+            testDimension: true,
+            testMetric: true,
             products: [{
               quantity: 1,
               price: 24.75,
@@ -1435,7 +1441,11 @@ describe('Google Analytics', function() {
             shipping: 13.99,
             coupon: 'coupon'
           }]);
-          analytics.deepEqual(toArray(window.ga.args[5]), ['send', 'event', 'EnhancedEcommerce', 'order completed', { nonInteraction: 1 }]);
+          analytics.deepEqual(toArray(window.ga.args[5]), ['send', 'event', 'EnhancedEcommerce', 'order completed', { 
+            nonInteraction: 1, 
+            metric1: 'true', 
+            dimension1: 'true' 
+          }]);
         });
 
         it('should add coupon to product level in order completed', function() {
