@@ -1,3 +1,8 @@
+2.10.0 / 2018-02-06
+=================
+
+* Support custom dimensions for enhanced ecommerce events.
+
 2.9.6 / 2017-11-28
 =================
 
