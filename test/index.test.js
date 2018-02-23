@@ -904,7 +904,9 @@ describe('Google Analytics', function() {
             price: 24.75,
             brand: undefined,
             variant: undefined,
-            currency: 'CAD'
+            currency: 'CAD',
+            metric1: 'true', 
+            dimension1: 'true'
           }]);
           analytics.deepEqual(toArray(window.ga.args[3]), ['ec:setAction', 'add', {}]);
           analytics.deepEqual(toArray(window.ga.args[4]), ['send', 'event', 'cat 1', 'product added', { 
@@ -967,7 +969,9 @@ describe('Google Analytics', function() {
             price: 24.75,
             brand: undefined,
             variant: undefined,
-            currency: 'CAD'
+            currency: 'CAD',
+            metric1: 'true', 
+            dimension1: 'true'
           }]);
           analytics.deepEqual(toArray(window.ga.args[3]), ['ec:setAction', 'remove', {}]);
           analytics.deepEqual(toArray(window.ga.args[4]), ['send', 'event', 'cat 1', 'product removed', {
@@ -1004,7 +1008,9 @@ describe('Google Analytics', function() {
             price: 24.75,
             brand: undefined,
             variant: undefined,
-            currency: 'CAD'
+            currency: 'CAD',
+            metric1: 'true',
+            dimension1: 'true'
           }]);
           analytics.deepEqual(toArray(window.ga.args[3]), ['ec:setAction', 'detail', { list: 'Apparel Gallery' }]);
           analytics.deepEqual(toArray(window.ga.args[4]), ['send', 'event', 'cat 1', 'product viewed', { 
@@ -1115,7 +1121,9 @@ describe('Google Analytics', function() {
             price: 24.75,
             brand: undefined,
             variant: undefined,
-            currency: 'CAD'
+            currency: 'CAD', 
+            metric1: 'true', 
+            dimension1: 'true'
           }]);
           analytics.deepEqual(toArray(window.ga.args[3]), ['ec:setAction', 'click', { list: 'search results' }]);
           analytics.deepEqual(toArray(window.ga.args[4]), ['send', 'event', 'cat 1', 'product clicked', { 
@@ -1382,7 +1390,10 @@ describe('Google Analytics', function() {
 
         it('should send order completed data', function() {
           ga.options.setAllMappedProps = false;
-          ga.options.dimensions = { testDimension: 'dimension1' };
+          ga.options.dimensions = { 
+            testDimension: 'dimension1', 
+            productDimension: 'dimension2' 
+          };
           ga.options.metrics = { testMetric: 'metric1' };
 
           analytics.track('order completed', {
@@ -1400,14 +1411,16 @@ describe('Google Analytics', function() {
               price: 24.75,
               name: 'my product',
               category: 'cat 1',
-              sku: 'p-298'
+              sku: 'p-298',
+              productDimension: 'testing'
             }, {
               quantity: 3,
               price: 24.75,
               name: 'other product',
               category: 'cat 2',
               sku: 'p-299',
-              currency: 'EUR'
+              currency: 'EUR',
+              productDimension: 'testing'
             }]
           });
 
@@ -1421,7 +1434,8 @@ describe('Google Analytics', function() {
             price: 24.75,
             brand: undefined,
             variant: undefined,
-            currency: 'CAD'
+            currency: 'CAD',
+            dimension2: 'testing'
           }]);
           analytics.deepEqual(toArray(window.ga.args[3]), ['ec:addProduct', {
             id: 'p-299',
@@ -1431,7 +1445,8 @@ describe('Google Analytics', function() {
             price: 24.75,
             brand: undefined,
             variant: undefined,
-            currency: 'EUR'
+            currency: 'EUR',
+            dimension2: 'testing'
           }]);
           analytics.deepEqual(toArray(window.ga.args[4]), ['ec:setAction', 'purchase', {
             id: '780bc55',
