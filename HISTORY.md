@@ -1,3 +1,8 @@
+2.13.0 / 2018-02-26
+=================
+
+* Support product-level custom dimensions for enhanced ecommerce events.
+
 2.12.0 / 2018-02-06
 =================
 
