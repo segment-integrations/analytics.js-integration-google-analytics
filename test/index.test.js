@@ -891,7 +891,8 @@ describe('Google Analytics', function() {
             category: 'cat 1',
             sku: 'p-298',
             testDimension: true, 
-            testMetric: true
+            testMetric: true,
+            position: 4
           });
           
           analytics.assert(window.ga.args.length === 5);
@@ -906,7 +907,48 @@ describe('Google Analytics', function() {
             variant: undefined,
             currency: 'CAD',
             metric1: 'true', 
-            dimension1: 'true'
+            dimension1: 'true',
+            position: 4
+          }]);
+          analytics.deepEqual(toArray(window.ga.args[3]), ['ec:setAction', 'add', {}]);
+          analytics.deepEqual(toArray(window.ga.args[4]), ['send', 'event', 'cat 1', 'product added', { 
+            dimension1: 'true',
+            metric1: 'true',
+            nonInteraction: 1 
+          }]);
+        });
+
+        it('should handle float positions for product data', function() {
+          ga.options.setAllMappedProps = false;
+          ga.options.dimensions = { testDimension: 'dimension1' };
+          ga.options.metrics = { testMetric: 'metric1' };
+
+          analytics.track('product added', {
+            currency: 'CAD',
+            quantity: 1,
+            price: 24.75,
+            name: 'my product',
+            category: 'cat 1',
+            sku: 'p-298',
+            testDimension: true, 
+            testMetric: true,
+            position: 4.5
+          });
+          
+          analytics.assert(window.ga.args.length === 5);
+          analytics.deepEqual(toArray(window.ga.args[1]), ['set', '&cu', 'CAD']);
+          analytics.deepEqual(toArray(window.ga.args[2]), ['ec:addProduct', {
+            id: 'p-298',
+            name: 'my product',
+            category: 'cat 1',
+            quantity: 1,
+            price: 24.75,
+            brand: undefined,
+            variant: undefined,
+            currency: 'CAD',
+            metric1: 'true', 
+            dimension1: 'true',
+            position: 5
           }]);
           analytics.deepEqual(toArray(window.ga.args[3]), ['ec:setAction', 'add', {}]);
           analytics.deepEqual(toArray(window.ga.args[4]), ['send', 'event', 'cat 1', 'product added', { 
