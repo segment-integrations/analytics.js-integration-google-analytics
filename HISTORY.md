@@ -1,3 +1,8 @@
+2.14.0 / 2018-03-28
+=================
+
+* Support position property as part of product data.
+
 2.13.0 / 2018-02-26
 =================
 
