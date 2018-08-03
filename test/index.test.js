@@ -148,7 +148,7 @@ describe('Google Analytics', function() {
         });
 
         it('should use AMP Id as the Client Id if the setting is enabled', function() {
-          ga.options.useGoogleAmpClientId = true;
+          ga.options.useAmpClientId = true;
           var expectedOpts = {
             cookieDomain: 'none',
             siteSpeedSampleRate: settings.siteSpeedSampleRate,
@@ -890,11 +890,11 @@ describe('Google Analytics', function() {
             name: 'my product',
             category: 'cat 1',
             sku: 'p-298',
-            testDimension: true, 
+            testDimension: true,
             testMetric: true,
             position: 4
           });
-          
+
           analytics.assert(window.ga.args.length === 5);
           analytics.deepEqual(toArray(window.ga.args[1]), ['set', '&cu', 'CAD']);
           analytics.deepEqual(toArray(window.ga.args[2]), ['ec:addProduct', {
@@ -906,15 +906,15 @@ describe('Google Analytics', function() {
             brand: undefined,
             variant: undefined,
             currency: 'CAD',
-            metric1: 'true', 
+            metric1: 'true',
             dimension1: 'true',
             position: 4
           }]);
           analytics.deepEqual(toArray(window.ga.args[3]), ['ec:setAction', 'add', {}]);
-          analytics.deepEqual(toArray(window.ga.args[4]), ['send', 'event', 'cat 1', 'product added', { 
+          analytics.deepEqual(toArray(window.ga.args[4]), ['send', 'event', 'cat 1', 'product added', {
             dimension1: 'true',
             metric1: 'true',
-            nonInteraction: 1 
+            nonInteraction: 1
           }]);
         });
 
@@ -930,11 +930,11 @@ describe('Google Analytics', function() {
             name: 'my product',
             category: 'cat 1',
             sku: 'p-298',
-            testDimension: true, 
+            testDimension: true,
             testMetric: true,
             position: 4.5
           });
-          
+
           analytics.assert(window.ga.args.length === 5);
           analytics.deepEqual(toArray(window.ga.args[1]), ['set', '&cu', 'CAD']);
           analytics.deepEqual(toArray(window.ga.args[2]), ['ec:addProduct', {
@@ -946,15 +946,15 @@ describe('Google Analytics', function() {
             brand: undefined,
             variant: undefined,
             currency: 'CAD',
-            metric1: 'true', 
+            metric1: 'true',
             dimension1: 'true',
             position: 5
           }]);
           analytics.deepEqual(toArray(window.ga.args[3]), ['ec:setAction', 'add', {}]);
-          analytics.deepEqual(toArray(window.ga.args[4]), ['send', 'event', 'cat 1', 'product added', { 
+          analytics.deepEqual(toArray(window.ga.args[4]), ['send', 'event', 'cat 1', 'product added', {
             dimension1: 'true',
             metric1: 'true',
-            nonInteraction: 1 
+            nonInteraction: 1
           }]);
         });
 
@@ -996,8 +996,8 @@ describe('Google Analytics', function() {
             price: 24.75,
             name: 'my product',
             category: 'cat 1',
-            sku: 'p-298', 
-            testDimension: true, 
+            sku: 'p-298',
+            testDimension: true,
             testMetric: true
           });
 
@@ -1012,14 +1012,14 @@ describe('Google Analytics', function() {
             brand: undefined,
             variant: undefined,
             currency: 'CAD',
-            metric1: 'true', 
+            metric1: 'true',
             dimension1: 'true'
           }]);
           analytics.deepEqual(toArray(window.ga.args[3]), ['ec:setAction', 'remove', {}]);
           analytics.deepEqual(toArray(window.ga.args[4]), ['send', 'event', 'cat 1', 'product removed', {
-            dimension1: 'true', 
-            metric1: 'true', 
-            nonInteraction: 1 
+            dimension1: 'true',
+            metric1: 'true',
+            nonInteraction: 1
           }]);
         });
 
@@ -1035,8 +1035,8 @@ describe('Google Analytics', function() {
             name: 'my product',
             category: 'cat 1',
             sku: 'p-298',
-            list: 'Apparel Gallery', 
-            testDimension: true, 
+            list: 'Apparel Gallery',
+            testDimension: true,
             testMetric: true
           });
 
@@ -1055,10 +1055,10 @@ describe('Google Analytics', function() {
             dimension1: 'true'
           }]);
           analytics.deepEqual(toArray(window.ga.args[3]), ['ec:setAction', 'detail', { list: 'Apparel Gallery' }]);
-          analytics.deepEqual(toArray(window.ga.args[4]), ['send', 'event', 'cat 1', 'product viewed', { 
-            dimension1: 'true', 
+          analytics.deepEqual(toArray(window.ga.args[4]), ['send', 'event', 'cat 1', 'product viewed', {
+            dimension1: 'true',
             metric1: 'true',
-            nonInteraction: 1 
+            nonInteraction: 1
           }]);
           analytics.assert(window.ga.args[1][0] === 'set');
         });
@@ -1075,7 +1075,7 @@ describe('Google Analytics', function() {
             products: [
               { product_id: '507f1f77bcf86cd799439011' }
             ],
-            testDimension: true, 
+            testDimension: true,
             testMetric: true
           });
           analytics.assert(window.ga.args.length === 4);
@@ -1086,10 +1086,10 @@ describe('Google Analytics', function() {
             list: '1234',
             position: 1
           }]);
-          analytics.deepEqual(toArray(window.ga.args[3]), ['send', 'event', 'cat 1', 'Product List Viewed', { 
-            dimension1: 'true', 
+          analytics.deepEqual(toArray(window.ga.args[3]), ['send', 'event', 'cat 1', 'Product List Viewed', {
+            dimension1: 'true',
             metric1: 'true',
-            nonInteraction: 1 
+            nonInteraction: 1
           }]);
         });
 
@@ -1129,10 +1129,10 @@ describe('Google Analytics', function() {
             position: 1,
             variant: 'department:beauty,price:under::price:desc'
           }]);
-          analytics.deepEqual(toArray(window.ga.args[3]), ['send', 'event', 'cat 1', 'Product List Filtered', { 
-            dimension1: 'true', 
+          analytics.deepEqual(toArray(window.ga.args[3]), ['send', 'event', 'cat 1', 'Product List Filtered', {
+            dimension1: 'true',
             metric1: 'true',
-            nonInteraction: 1 
+            nonInteraction: 1
           }]);
         });
 
@@ -1148,7 +1148,7 @@ describe('Google Analytics', function() {
             name: 'my product',
             category: 'cat 1',
             sku: 'p-298',
-            list: 'search results', 
+            list: 'search results',
             testDimension: true,
             testMetric: true
           });
@@ -1163,15 +1163,15 @@ describe('Google Analytics', function() {
             price: 24.75,
             brand: undefined,
             variant: undefined,
-            currency: 'CAD', 
-            metric1: 'true', 
+            currency: 'CAD',
+            metric1: 'true',
             dimension1: 'true'
           }]);
           analytics.deepEqual(toArray(window.ga.args[3]), ['ec:setAction', 'click', { list: 'search results' }]);
-          analytics.deepEqual(toArray(window.ga.args[4]), ['send', 'event', 'cat 1', 'product clicked', { 
-            dimension1: 'true', 
+          analytics.deepEqual(toArray(window.ga.args[4]), ['send', 'event', 'cat 1', 'product clicked', {
+            dimension1: 'true',
             metric1: 'true',
-            nonInteraction: 1 
+            nonInteraction: 1
           }]);
         });
 
@@ -1185,7 +1185,7 @@ describe('Google Analytics', function() {
             promotion_id: 'PROMO_1234',
             name: 'Summer Sale',
             creative: 'summer_banner2',
-            position: 'banner_slot1', 
+            position: 'banner_slot1',
             testDimension: true,
             testMetric: true
           });
@@ -1198,10 +1198,10 @@ describe('Google Analytics', function() {
             creative: 'summer_banner2',
             position: 'banner_slot1'
           }]);
-          analytics.deepEqual(toArray(window.ga.args[3]), ['send', 'event', 'EnhancedEcommerce', 'promotion viewed', { 
-            dimension1: 'true', 
+          analytics.deepEqual(toArray(window.ga.args[3]), ['send', 'event', 'EnhancedEcommerce', 'promotion viewed', {
+            dimension1: 'true',
             metric1: 'true',
-            nonInteraction: 1 
+            nonInteraction: 1
           }]);
         });
 
@@ -1215,7 +1215,7 @@ describe('Google Analytics', function() {
             promotion_id: 'PROMO_1234',
             name: 'Summer Sale',
             creative: 'summer_banner2',
-            position: 'banner_slot1', 
+            position: 'banner_slot1',
             testDimension: true,
             testMetric: true
           });
@@ -1229,10 +1229,10 @@ describe('Google Analytics', function() {
             position: 'banner_slot1'
           }]);
           analytics.deepEqual(toArray(window.ga.args[3]), ['ec:setAction', 'promo_click', {}]);
-          analytics.deepEqual(toArray(window.ga.args[4]), ['send', 'event', 'EnhancedEcommerce', 'promotion clicked', { 
-            dimension1: 'true', 
+          analytics.deepEqual(toArray(window.ga.args[4]), ['send', 'event', 'EnhancedEcommerce', 'promotion clicked', {
+            dimension1: 'true',
             metric1: 'true',
-            nonInteraction: 1 
+            nonInteraction: 1
           }]);
         });
 
@@ -1255,7 +1255,7 @@ describe('Google Analytics', function() {
               sku: 'p-299'
             }],
             step: 1,
-            paymentMethod: 'Visa', 
+            paymentMethod: 'Visa',
             testDimension: true,
             testMetric: true
           });
@@ -1285,10 +1285,10 @@ describe('Google Analytics', function() {
             step: 1,
             option: 'Visa'
           }]);
-          analytics.deepEqual(toArray(window.ga.args[5]), ['send', 'event', 'EnhancedEcommerce', 'checkout started', { 
-            dimension1: 'true', 
+          analytics.deepEqual(toArray(window.ga.args[5]), ['send', 'event', 'EnhancedEcommerce', 'checkout started', {
+            dimension1: 'true',
             metric1: 'true',
-            nonInteraction: 1 
+            nonInteraction: 1
           }]);
         });
 
@@ -1313,7 +1313,7 @@ describe('Google Analytics', function() {
               sku: 'p-299'
             }],
             step: 1,
-            paymentMethod: 'Visa', 
+            paymentMethod: 'Visa',
             testDimension: true,
             testMetric: true
           });
@@ -1343,10 +1343,10 @@ describe('Google Analytics', function() {
             step: 1,
             option: 'Visa'
           }]);
-          analytics.deepEqual(toArray(window.ga.args[5]), ['send', 'event', 'EnhancedEcommerce', 'order updated', { 
-            dimension1: 'true', 
+          analytics.deepEqual(toArray(window.ga.args[5]), ['send', 'event', 'EnhancedEcommerce', 'order updated', {
+            dimension1: 'true',
             metric1: 'true',
-            nonInteraction: 1 
+            nonInteraction: 1
           }]);
         });
 
@@ -1432,9 +1432,9 @@ describe('Google Analytics', function() {
 
         it('should send order completed data', function() {
           ga.options.setAllMappedProps = false;
-          ga.options.dimensions = { 
-            testDimension: 'dimension1', 
-            productDimension: 'dimension2' 
+          ga.options.dimensions = {
+            testDimension: 'dimension1',
+            productDimension: 'dimension2'
           };
           ga.options.metrics = { testMetric: 'metric1' };
 
@@ -1498,10 +1498,10 @@ describe('Google Analytics', function() {
             shipping: 13.99,
             coupon: 'coupon'
           }]);
-          analytics.deepEqual(toArray(window.ga.args[5]), ['send', 'event', 'EnhancedEcommerce', 'order completed', { 
-            nonInteraction: 1, 
-            metric1: 'true', 
-            dimension1: 'true' 
+          analytics.deepEqual(toArray(window.ga.args[5]), ['send', 'event', 'EnhancedEcommerce', 'order completed', {
+            nonInteraction: 1,
+            metric1: 'true',
+            dimension1: 'true'
           }]);
         });
 
@@ -1595,10 +1595,10 @@ describe('Google Analytics', function() {
           analytics.deepEqual(toArray(window.ga.args[2]), ['ec:setAction', 'refund', {
             id: '780bc55'
           }]);
-          analytics.deepEqual(toArray(window.ga.args[3]), ['send', 'event', 'EnhancedEcommerce', 'order refunded', { 
-            dimension1: 'true', 
+          analytics.deepEqual(toArray(window.ga.args[3]), ['send', 'event', 'EnhancedEcommerce', 'order refunded', {
+            dimension1: 'true',
             metric1: 'true',
-            nonInteraction: 1 
+            nonInteraction: 1
           }]);
         });
 
@@ -1615,7 +1615,7 @@ describe('Google Analytics', function() {
             }, {
               quantity: 2,
               sku: 'p-299'
-            }], 
+            }],
             testDimension: true,
             testMetric: true
           });
@@ -1632,10 +1632,10 @@ describe('Google Analytics', function() {
           analytics.deepEqual(toArray(window.ga.args[4]), ['ec:setAction', 'refund', {
             id: '780bc55'
           }]);
-          analytics.deepEqual(toArray(window.ga.args[5]), ['send', 'event', 'EnhancedEcommerce', 'order refunded', { 
+          analytics.deepEqual(toArray(window.ga.args[5]), ['send', 'event', 'EnhancedEcommerce', 'order refunded', {
             dimension1: 'true',
             metric1: 'true',
-            nonInteraction: 1 
+            nonInteraction: 1
           }]);
         });
       });
