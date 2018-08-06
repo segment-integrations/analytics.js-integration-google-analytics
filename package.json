@@ -1,7 +1,7 @@
 {
   "name": "@segment/analytics.js-integration-google-analytics",
   "description": "The Google Analytics analytics.js integration.",
-  "version": "2.14.0",
+  "version": "2.15.0",
   "keywords": [
     "analytics.js",
     "analytics.js-integration",
@@ -33,7 +33,8 @@
     "object-component": "0.0.3",
     "reject": "0.0.1",
     "segmentio-facade": "^3.1.0",
-    "use-https": "^0.1.1"
+    "use-https": "^0.1.1",
+    "lodash": "^4.17.4"
   },
   "devDependencies": {
     "@segment/analytics.js-core": "^3.0.0",
