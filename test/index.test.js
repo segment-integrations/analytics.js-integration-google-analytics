@@ -131,10 +131,10 @@ describe('Google Analytics', function() {
           analytics.initialize();
           analytics.page();
 
-          // some workaround for useGoogleAmpClientId as the name passed to GA needed to change to useAMPclientID
+          // some workaround for useGoogleAmpClientId as the name passed to GA needed to change to useAmpClientId
           // but the tests expect the option name to == the parameter passed
           var expectedOptsOmitAmp = _.omit(expectedOpts,['useGoogleAmpClientId']);
-          var gaOptsOmitAmp = _.omit(window.ga.q[0][2],'useAMPclientID');
+          var gaOptsOmitAmp = _.omit(window.ga.q[0][2],'useAmpClientId');
           window.ga.q[0][2] = gaOptsOmitAmp;
 
           analytics.deepEqual(toArray(window.ga.q[0]), ['create', settings.trackingId, expectedOptsOmitAmp]);
@@ -153,17 +153,17 @@ describe('Google Analytics', function() {
           analytics.initialize();
           analytics.page();
 
-          // some workaround for useGoogleAmpClientId as the name passed to GA needed to change to useAMPclientID
+          // some workaround for useGoogleAmpClientId as the name passed to GA needed to change to useAmpClientId
           // but the tests expect the option name to == the parameter passed
           var expectedOptsOmitAmp = _.omit(expectedOpts,['useGoogleAmpClientId']);
-          var gaOptsOmitAmp = _.omit(window.ga.q[0][2],'useAMPclientID');
+          var gaOptsOmitAmp = _.omit(window.ga.q[0][2],'useAmpClientId');
           window.ga.q[0][2] = gaOptsOmitAmp;
 
           analytics.deepEqual(toArray(window.ga.q[0]), ['create', settings.trackingId, expectedOptsOmitAmp]);
         });
 
         it('should use AMP Id as the Client Id if the setting is enabled', function() {
-          ga.options.useAMPclientID = true;
+          ga.options.useAmpClientId = true;
           var expectedOpts = {
             cookieDomain: 'none',
             useGoogleAmpClientId: true,
@@ -174,10 +174,10 @@ describe('Google Analytics', function() {
 
           analytics.initialize();
           analytics.page();
-          // some workaround for useGoogleAmpClientId as the name passed to GA needed to change to useAMPclientID
+          // some workaround for useGoogleAmpClientId as the name passed to GA needed to change to uuseAmpClientId
           // but the tests expect the option name to == the parameter passed
           var expectedOptsOmitAmp = _.omit(expectedOpts,['useGoogleAmpClientId']);
-          var gaOptsOmitAmp = _.omit(window.ga.q[0][2],'useAMPclientID');
+          var gaOptsOmitAmp = _.omit(window.ga.q[0][2],'useAmpClientId');
           window.ga.q[0][2] = gaOptsOmitAmp;
 
           analytics.deepEqual(toArray(window.ga.q[0]), ['create', settings.trackingId, expectedOptsOmitAmp]);
