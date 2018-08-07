@@ -1,4 +1,13 @@
 
+2.15.0 / 2018-08-07
+===================
+
+  * Fix casing from abmiguous docs
+  * Bump version
+  * Add lodash to package.json
+  * Correct casing on parameter name
+  * Change amp id setting name
+
 2.15.0 / 2018-08-06
 ==================
 
