@@ -1087,14 +1087,14 @@ describe('Google Analytics', function() {
         it('should send product impression data via product list viewed', function() {
           // If using addImpression ever becomes optional, will need to add a setting modification here.
           ga.options.setAllMappedProps = false;
-          ga.options.dimensions = { testDimension: 'dimension1' };
-          ga.options.metrics = { testMetric: 'metric1' };
+          ga.options.dimensions = { testDimension: 'dimension1', productDimension: 'dimension2' };
+          ga.options.metrics = { testMetric: 'metric1', productMetric: 'metric2' };
 
           analytics.track('Product List Viewed', {
             category: 'cat 1',
             list_id: '1234',
             products: [
-              { product_id: '507f1f77bcf86cd799439011' }
+              { product_id: '507f1f77bcf86cd799439011', productDimension: 'My Product Dimension', productMetric: 'My Product Metric' }
             ],
             testDimension: true,
             testMetric: true
@@ -1105,7 +1105,9 @@ describe('Google Analytics', function() {
             id: '507f1f77bcf86cd799439011',
             category: 'cat 1',
             list: '1234',
-            position: 1
+            position: 1,
+            dimension2: 'My Product Dimension',
+            metric2: 'My Product Metric'
           }]);
           analytics.deepEqual(toArray(window.ga.args[3]), ['send', 'event', 'cat 1', 'Product List Viewed', {
             dimension1: 'true',
@@ -1117,8 +1119,8 @@ describe('Google Analytics', function() {
         it('should send product impression data via product list filtered', function() {
           // If using addImpression ever becomes optional, will need to add a setting modification here.
           ga.options.setAllMappedProps = false;
-          ga.options.dimensions = { testDimension: 'dimension1' };
-          ga.options.metrics = { testMetric: 'metric1' };
+          ga.options.dimensions = { testDimension: 'dimension1', productDimension: 'dimension2' };
+          ga.options.metrics = { testMetric: 'metric1', productMetric: 'metric2' };
 
           analytics.track('Product List Filtered', {
             category: 'cat 1',
@@ -1136,7 +1138,7 @@ describe('Google Analytics', function() {
               value: 'desc'
             }],
             products: [
-              { product_id: '507f1f77bcf86cd799439011' }
+              { product_id: '507f1f77bcf86cd799439011', productDimension: 'My Product Dimension', productMetric: 'My Product Metric' }
             ],
             testDimension: true,
             testMetric: true
@@ -1148,7 +1150,9 @@ describe('Google Analytics', function() {
             category: 'cat 1',
             list: '1234',
             position: 1,
-            variant: 'department:beauty,price:under::price:desc'
+            variant: 'department:beauty,price:under::price:desc',
+            dimension2: 'My Product Dimension',
+            metric2: 'My Product Metric'
           }]);
           analytics.deepEqual(toArray(window.ga.args[3]), ['send', 'event', 'cat 1', 'Product List Filtered', {
             dimension1: 'true',
