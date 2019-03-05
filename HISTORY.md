@@ -1,3 +1,7 @@
+2.16.0 / 2019-03-05
+===================
+
+  * Add support for product level custom dimensions to Product List Viewed and Product List Filtered handlers
 
 2.15.0 / 2018-08-07
 ===================
