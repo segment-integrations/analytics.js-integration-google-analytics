@@ -10,7 +10,8 @@ describe('Oiq', function() {
   var analytics;
   var oiq;
   var options = {
-    oiq_lifecycle: 'rcpt'
+    data_group_id: 'inte',
+    tag_id: 'rcpt'
   };
 
   beforeEach(function() {
@@ -36,7 +37,8 @@ describe('Oiq', function() {
     it('should have the right settings', function() {
       analytics.compare(Oiq, integration('Oiq')
         .global('_oiqq')
-        .option('oiq_lifecycle','rcpt'));
+        .option('tag_id','')
+        .option('data_group_id',''));
     });
 
     describe('#initialize', function() {
@@ -93,23 +95,23 @@ describe('Oiq', function() {
 
           setTimeout(function() {
             analytics.assert(window._oiqq.map(function(kvp) {
+              return kvp[1][0] === 'oiq_addPageLifecycle' && kvp[1][1] === 'rcpt';
+            }).length === 1);
+
+            analytics.assert(window._oiqq.map(function(kvp) {
               return kvp[1][0] === 'order_id';
             }).length === 1);
             analytics.assert(window._oiqq.filter(function(kvp) {
               return kvp[1][0] === 'order_id';
             })[1][1] === 123);
-          }, 1000);
 
-          setTimeout(function() {
             analytics.assert(window._oiqq.map(function(kvp) {
               return kvp[1][0] === 'total_cost_notax';
             }).length === 1);
             analytics.assert(window._oiqq.filter(function(kvp) {
               return kvp[1][0] === 'total_cost_notax';
             })[1][1] === 0.5);
-          }, 1000);
 
-          setTimeout(function() {
             analytics.assert(window._oiqq.map(function(kvp) {
               return kvp[1][0] === 'total_cost_tax';
             }).length);
@@ -117,12 +119,6 @@ describe('Oiq', function() {
               return kvp[1][0] === 'total_cost_tax';
             })[1][1] === 0.6);
 
-            analytics.assert(window._oiqq.map(function(kvp) {
-              return kvp[0] === 'oiq_doTag';
-            }).length === 1);
-          }, 1000);
-
-          setTimeout(function() {
             analytics.assert(window._oiqq.map(function(kvp) {
               return kvp[0] === 'oiq_doTag';
             }).length === 1);
