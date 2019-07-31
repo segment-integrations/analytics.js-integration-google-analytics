@@ -36,6 +36,7 @@ describe('Oiq', function() {
 
     it('should have the right settings', function() {
       analytics.compare(Oiq, integration('Oiq')
+        .assumesPageview()
         .global('_oiqq')
         .option('tag_id','')
         .option('data_group_id',''));
@@ -66,7 +67,6 @@ describe('Oiq', function() {
       });
 
       it('should track a pageview', function() {
-        analytics.page();
         setTimeout(function() {
           analytics.assert(window._oiqq[0]);
           analytics.assert(window._oiqq[0][0] === 'oiq_addPageLifecycle');
